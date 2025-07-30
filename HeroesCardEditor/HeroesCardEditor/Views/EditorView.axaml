@@ -1,0 +1,181 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:sys="using:System"
+			 xmlns:m="using:HeroesCardEditor.Models"
+			 xmlns:vm="using:HeroesCardEditor.ViewModels"
+			 xmlns:engine="using:PvZCards.Engine"
+			 xmlns:components="using:PvZCards.Engine.Components"
+        x:Class="HeroesCardEditor.EditorView"
+		x:DataType="vm:EditorViewModel">
+	
+	<UserControl.ContextFlyout>
+		<Flyout ShowMode="Transient" Placement="Top"/>
+	</UserControl.ContextFlyout>
+
+	<UserControl.Styles>
+		<Style Selector="FlyoutPresenter">
+			<Setter Property="MaxWidth" Value="100000" />
+		</Style>
+	</UserControl.Styles>
+
+	<DockPanel>
+		<Menu DockPanel.Dock="Top">
+			<MenuItem Header="_File">
+				<MenuItem Header="_Open File... [Ctrl+O]"
+						  Command="{Binding OpenFileDialog}"
+						  HotKey="Ctrl+O">
+					<MenuItem.CommandParameter>
+						<MultiBinding>
+							<Binding Path="$parent[Window]"/>
+							<Binding Path="$parent[UserControl]"/>
+						</MultiBinding>
+					</MenuItem.CommandParameter>
+				</MenuItem>
+				<MenuItem x:Name="recent"
+						  Header="Open _Recent"
+						  ItemsSource="{Binding Recents, UpdateSourceTrigger=Default}">
+					<MenuItem.ItemTemplate>
+						<DataTemplate x:Class="m:RecentFile">
+							<MenuItem Header="{Binding FileName}"
+									  Command="{Binding #recent.((vm:EditorViewModel)DataContext).OpenRecentFile}">
+								<MenuItem.CommandParameter>
+									<MultiBinding>
+										<Binding Path="$parent[Window]"/>
+										<Binding Path="$parent[UserControl]"/>
+										<Binding Path=""/>
+									</MultiBinding>
+								</MenuItem.CommandParameter>
+							</MenuItem>
+						</DataTemplate>
+					</MenuItem.ItemTemplate>
+				</MenuItem>
+				<Separator/>
+				<MenuItem Header="_Save [Ctrl+S]"
+						  Command="{Binding SaveFile}"
+						  HotKey="Ctrl+S"
+						  IsEnabled="{Binding SelectedFile,
+							Converter={x:Static ObjectConverters.IsNotNull}}">
+					<MenuItem.CommandParameter>
+						<MultiBinding>
+							<Binding Path="$parent[Window]"/>
+							<Binding Path="$parent[UserControl]"/>
+						</MultiBinding>
+					</MenuItem.CommandParameter>
+				</MenuItem>
+				<MenuItem Header="Save _As [Ctrl+Shift+S]"
+						  Command="{Binding SaveFileAs}"
+						  HotKey="Ctrl+Shift+S"
+						  IsEnabled="{Binding SelectedFile,
+							Converter={x:Static ObjectConverters.IsNotNull}}">
+					<MenuItem.CommandParameter>
+						<MultiBinding>
+							<Binding Path="$parent[Window]"/>
+							<Binding Path="$parent[UserControl]"/>
+						</MultiBinding>
+					</MenuItem.CommandParameter>
+				</MenuItem>
+				<Separator/>
+				<MenuItem Header="_Preferences [Ctrl+P]"
+						  Command="{Binding OpenPreferences}"
+						  HotKey="Ctrl+P">
+					<MenuItem.CommandParameter>
+						<MultiBinding>
+							<Binding Path="$parent[Window]"/>
+							<Binding Path="$parent[UserControl]"/>
+						</MultiBinding>
+					</MenuItem.CommandParameter>
+				</MenuItem>
+			</MenuItem>
+			
+			<MenuItem Header="_Edit"
+					  IsEnabled="{Binding SelectedFile,
+						Converter={x:Static ObjectConverters.IsNotNull}}">
+				<MenuItem Header="_Delete Effect Component [Delete]"
+						  Command="{Binding SelectedFile.SelectedTab.DeleteSelectedEffectComponent}"
+						  CommandParameter="{Binding SelectedFile.SelectedTab.SelectedComponent}"
+						  HotKey="Delete"
+						  IsEnabled="{Binding SelectedFile.SelectedTab.SelectedComponent,
+							  Converter={x:Static ObjectConverters.IsNotNull},
+							  UpdateSourceTrigger=PropertyChanged}"/>
+				<MenuItem Header="_Delete Card [Ctrl+Delete]"
+						  Command="{Binding SelectedFile.DeleteSelectedCard}"
+						  HotKey="Ctrl+Delete"
+						  IsEnabled="{Binding SelectedFile.SelectedTab,
+							  Converter={x:Static ObjectConverters.IsNotNull},
+							  UpdateSourceTrigger=PropertyChanged}">
+					<MenuItem.CommandParameter>
+						<MultiBinding>
+							<Binding Path="$parent[Window]"/>
+							<Binding Path="$parent[UserControl]"/>
+						</MultiBinding>
+					</MenuItem.CommandParameter>
+				</MenuItem>
+				<MenuItem Header="_Create New Card [Ctrl+Add]"
+						  Command="{Binding SelectedFile.CreateEmptyCard}"
+						  HotKey="Ctrl+Add">
+					<MenuItem.CommandParameter>
+						<MultiBinding>
+							<Binding Path="$parent[Window]"/>
+							<Binding Path="$parent[UserControl]"/>
+						</MultiBinding>
+					</MenuItem.CommandParameter>
+				</MenuItem>
+			</MenuItem>			
+
+			<MenuItem Header="_View"
+					  IsEnabled="{Binding SelectedFile,
+						Converter={x:Static ObjectConverters.IsNotNull}}">
+				<MenuItem Header="Search... [Ctrl+F]"
+						  Command="{Binding OpenSearchDialog}"
+						  HotKey="Ctrl+F">
+					<MenuItem.CommandParameter>
+						<MultiBinding>
+							<Binding Path="$parent[Window]"/>
+							<Binding Path="$parent[UserControl]"/>
+						</MultiBinding>
+					</MenuItem.CommandParameter>
+				</MenuItem>
+				<MenuItem Header="Open Filter... [Shift+F]"
+						  Command="{Binding OpenFilterDialog}"
+						  HotKey="Shift+F">
+					<MenuItem.CommandParameter>
+						<MultiBinding>
+							<Binding Path="$parent[Window]"/>
+							<Binding Path="$parent[UserControl]"/>
+						</MultiBinding>
+					</MenuItem.CommandParameter>
+				</MenuItem>
+				<MenuItem Header="Open Sorting... [Shift+S]"
+						  Command="{Binding OpenSortingDialog}"
+						  HotKey="Shift+F">
+					<MenuItem.CommandParameter>
+						<MultiBinding>
+							<Binding Path="$parent[Window]"/>
+							<Binding Path="$parent[UserControl]"/>
+						</MultiBinding>
+					</MenuItem.CommandParameter>
+				</MenuItem>
+			</MenuItem>
+		</Menu>
+			<TabControl ItemsSource="{Binding OpenedFiles}"
+						SelectedItem="{Binding SelectedFile}">
+				<TabControl.ItemTemplate>
+					<DataTemplate x:DataType="vm:FileEditor">
+						<TabItem Theme="{StaticResource DefaultTabItem}"
+										 ToolTip.Tip="{Binding File.Path}"
+										FontSize="8">
+							<TabItem.Header>
+								<StackPanel Orientation="Horizontal">
+									<TextBlock Text="{Binding File.Name}"/>
+									<TextBlock Text="*" IsVisible="{Binding HasUnsavedChanged}"/>
+								</StackPanel>
+							</TabItem.Header>
+						</TabItem>
+					</DataTemplate>
+				</TabControl.ItemTemplate>
+			</TabControl>
+		</DockPanel>
+</UserControl>

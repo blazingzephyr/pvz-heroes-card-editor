@@ -1,0 +1,15 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		Width="400"
+		Height="500"
+			 xmlns:v="using:HeroesCardEditor"
+			 xmlns:m="using:HeroesCardEditor.Models"
+			 xmlns:vm="using:HeroesCardEditor.ViewModels"
+        x:Class="HeroesCardEditor.FilterWindow"
+		x:DataType="vm:FileEditorFilter"
+        Title="Filter cards by...">
+	
+	<v:FilterView/>
+</Window>

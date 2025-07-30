@@ -1,0 +1,16 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:sys="using:System"
+			 xmlns:v="using:HeroesCardEditor"
+			 xmlns:m="using:HeroesCardEditor.Models"
+			 xmlns:vm="using:HeroesCardEditor.ViewModels"
+			 xmlns:engine="using:PvZCards.Engine"
+			 xmlns:components="using:PvZCards.Engine.Components"
+        x:Class="HeroesCardEditor.EditorWindow"
+		Title="PvZ Heroes Card Editor">
+	
+	<v:EditorView/>
+</Window>

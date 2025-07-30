@@ -1,0 +1,87 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:vm="using:HeroesCardEditor.ViewModels"
+					xmlns:m="using:HeroesCardEditor.Models">
+
+	<DataTemplate x:Key="FileEditor" x:DataType="vm:FileEditor">
+		<Grid ColumnDefinitions="1*, 2*">
+			<ListBox x:Name="list"
+					 SelectedItem="{Binding SelectedEntry, UpdateSourceTrigger=PropertyChanged}"
+					 Grid.Column="0"
+					 ItemsSource="{Binding Entries, UpdateSourceTrigger=PropertyChanged}"
+					 ScrollViewer.VerticalSnapPointsType="Mandatory"
+					 ScrollViewer.VerticalScrollBarVisibility="Visible"
+					 FontSize="8">
+				
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<Border
+								BorderThickness="1"
+								Padding="4"
+								CornerRadius="4">
+							<Border.Styles>
+								<Style Selector="Border:pointerover">
+									<Setter Property="BorderBrush"
+											Value="{Binding Rarity, Converter={x:Static m:CardProperties.BorderSelected}}}"/>
+									<Setter Property="Background"
+											Value="{Binding Rarity, Converter={x:Static m:CardProperties.BackgroundSelected}}}"/>
+								</Style>
+								<Style Selector="Border">
+									<Setter Property="BorderBrush"
+											Value="{Binding Rarity, Converter={x:Static m:CardProperties.Border}}}"/>
+									<Setter Property="Background"
+											Value="{Binding Rarity, Converter={x:Static m:CardProperties.Background}}}"/>
+								</Style>
+								<Style Selector="Border:pointerover TextBlock">
+									<Setter Property="Foreground"
+											Value="{Binding Rarity, Converter={x:Static m:CardProperties.ForegroundSelected}}}"/>
+								</Style>
+								<Style Selector="Border TextBlock">
+									<Setter Property="Foreground"
+											Value="{Binding Rarity, Converter={x:Static m:CardProperties.Foreground}}}"/>
+								</Style>
+							</Border.Styles>
+							
+							<DockPanel Margin="0,0,10,0">
+								<TextBlock DockPanel.Dock="Right"
+										   TextAlignment="Right"
+										   Text="{Binding Note}"/>
+
+								<TextBlock TextAlignment="Left">
+									<TextBlock.Text>
+										<MultiBinding StringFormat="{}{0}: {1}">
+											<Binding Path="Guid"/>
+											<Binding Path="PrefabName"/>
+										</MultiBinding>
+									</TextBlock.Text>
+								</TextBlock>
+							</DockPanel>
+						</Border>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+
+			<TabControl Grid.Column="1"
+						ItemsSource="{Binding OpenedEntries, UpdateSourceTrigger=PropertyChanged}"
+						SelectedItem="{Binding SelectedEntry, UpdateSourceTrigger=PropertyChanged}"
+						SelectedIndex="{Binding SelectedIndex, UpdateSourceTrigger=PropertyChanged}"
+						FontSize="8">
+				<TabControl.ItemTemplate>
+					<DataTemplate x:DataType="m:ObservableCardDescriptor">
+						<TabItem Theme="{StaticResource DefaultTabItem}"
+								 Header="{Binding Guid}"
+								FontSize="8">
+							<ToolTip.Tip>
+								<MultiBinding StringFormat="{}{0} {1}">
+									<Binding Path="PrefabName"/>
+									<Binding Path="Note"/>
+								</MultiBinding>
+							</ToolTip.Tip>
+						</TabItem>
+					</DataTemplate>
+				</TabControl.ItemTemplate>
+			</TabControl>
+		</Grid>
+	</DataTemplate>
+	
+</ResourceDictionary>
