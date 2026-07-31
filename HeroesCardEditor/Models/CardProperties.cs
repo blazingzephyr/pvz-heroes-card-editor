@@ -263,6 +263,7 @@ internal static class CardProperties
     public static readonly Type[] Triggers =
     [
         typeof(BuffTrigger),
+        typeof(CombatStartTrigger),
         typeof(CombatEndTrigger),
         typeof(Continuous),
         typeof(DamageTrigger),
