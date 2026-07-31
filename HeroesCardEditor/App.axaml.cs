@@ -20,24 +20,27 @@ public partial class App : Application
         AvaloniaXamlLoader.Load(this);
     }
 
-    public override async void OnFrameworkInitializationCompleted()
+    public override void OnFrameworkInitializationCompleted()
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            /// Opens or creates preferences and recent history files.
-            EditorView window = new EditorView();
-
-            (var prefsFile, var prefs) = await OpenOrCreate<Preferences>(window.StorageProvider, "preferences.json");
-            if (prefsFile == null || prefs == null) return;
-
-            (var recentFile, var recent) = await OpenOrCreate<Collection<RecentFile>>(window.StorageProvider, "recent.json");
-            if (recentFile == null || recent == null) return;
-
-            window.DataContext = new EditorViewModel(prefsFile, recentFile, prefs, recent);
+            var window = new EditorView();
             desktop.MainWindow = window;
+            InitializeAsync(window);
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private async Task InitializeAsync(EditorView window)
+    {
+        var (prefsFile, prefs) = await OpenOrCreate<Preferences>(window.StorageProvider, "preferences.json");
+        if (prefsFile == null || prefs == null) return;
+
+        var (recentFile, recent) = await OpenOrCreate<Collection<RecentFile>>(window.StorageProvider, "recent.json");
+        if (recentFile == null || recent == null) return;
+
+        window.DataContext = new EditorViewModel(prefsFile, recentFile, prefs, recent);
     }
 
     /// <summary>
