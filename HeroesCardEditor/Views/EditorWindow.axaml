@@ -9,8 +9,30 @@
 			 xmlns:engine="using:PvZCards.Engine"
 			 xmlns:components="using:PvZCards.Engine.Components"
         x:Class="HeroesCardEditor.EditorView"
-		x:DataType="vm:EditorViewModel"
+        x:Name="RootWindow"
+        x:DataType="vm:EditorViewModel"
         Title="Plants vs. Zombies Heroes Card Editor">
+
+    <Window.KeyBindings>
+        <KeyBinding Gesture="Ctrl+O" Command="{Binding OpenFileDialog}" CommandParameter="{Binding #RootWindow}"/>
+        <KeyBinding Gesture="Ctrl+S" Command="{Binding SaveFile}" CommandParameter="{Binding #RootWindow}"/>
+        <KeyBinding Gesture="Ctrl+Shift+S" Command="{Binding SaveFileAs}" CommandParameter="{Binding #RootWindow}"/>
+        <KeyBinding Gesture="Ctrl+P" Command="{Binding OpenPreferences}" CommandParameter="{Binding #RootWindow}"/>
+
+        <KeyBinding Gesture="Delete"
+                    Command="{Binding SelectedFile.SelectedTab.DeleteSelectedEffectComponent}"
+                    CommandParameter="{Binding SelectedFile.SelectedTab.SelectedComponent}"/>
+        <KeyBinding Gesture="Ctrl+Delete"
+                    Command="{Binding SelectedFile.DeleteSelectedCard}"
+                    CommandParameter="{Binding #RootWindow}"/>
+        <KeyBinding Gesture="Ctrl+Add"
+                    Command="{Binding SelectedFile.CreateEmptyCard}"
+                    CommandParameter="{Binding #RootWindow}"/>
+
+        <KeyBinding Gesture="Ctrl+F" Command="{Binding OpenSearchDialog}" CommandParameter="{Binding #RootWindow}"/>
+        <KeyBinding Gesture="Shift+F" Command="{Binding OpenFilterDialog}" CommandParameter="{Binding #RootWindow}"/>
+        <KeyBinding Gesture="Shift+S" Command="{Binding OpenSortingDialog}" CommandParameter="{Binding #RootWindow}"/>
+    </Window.KeyBindings>
 
 	<Window.ContextFlyout>
 		<Flyout ShowMode="Transient" Placement="Top"/>
@@ -50,20 +72,17 @@
 				<MenuItem Header="_Save [Ctrl+S]"
 						  Command="{Binding SaveFile}"
 						  CommandParameter="{Binding $parent[Window]}"
-						  HotKey="Ctrl+S"
 						  IsEnabled="{Binding SelectedFile,
 							Converter={x:Static ObjectConverters.IsNotNull}}"/>
 				<MenuItem Header="Save _As [Ctrl+Shift+S]"
 						  Command="{Binding SaveFileAs}"
 						  CommandParameter="{Binding $parent[Window]}"
-						  HotKey="Ctrl+Shift+S"
 						  IsEnabled="{Binding SelectedFile,
 							Converter={x:Static ObjectConverters.IsNotNull}}"/>
 				<Separator/>
 				<MenuItem Header="_Preferences [Ctrl+P]"
 						  Command="{Binding OpenPreferences}"
-						  CommandParameter="{Binding $parent[Window]}"
-						  HotKey="Ctrl+P"/>
+						  CommandParameter="{Binding $parent[Window]}"/>
 			</MenuItem>
 			
 			<MenuItem Header="_Edit"
@@ -72,21 +91,18 @@
 				<MenuItem Header="_Delete Effect Component [Delete]"
 						  Command="{Binding SelectedFile.SelectedTab.DeleteSelectedEffectComponent}"
 						  CommandParameter="{Binding SelectedFile.SelectedTab.SelectedComponent}"
-						  HotKey="Delete"
 						  IsEnabled="{Binding SelectedFile.SelectedTab.SelectedComponent,
 							  Converter={x:Static ObjectConverters.IsNotNull},
 							  UpdateSourceTrigger=PropertyChanged}"/>
 				<MenuItem Header="_Delete Card [Ctrl+Delete]"
 						  Command="{Binding SelectedFile.DeleteSelectedCard}"
 						  CommandParameter="{Binding $parent[Window]}"
-						  HotKey="Ctrl+Delete"
 						  IsEnabled="{Binding SelectedFile.SelectedTab,
 							  Converter={x:Static ObjectConverters.IsNotNull},
 							  UpdateSourceTrigger=PropertyChanged}"/>
 				<MenuItem Header="_Create New Card [Ctrl+Add]"
 						  Command="{Binding SelectedFile.CreateEmptyCard}"
-						  CommandParameter="{Binding $parent[Window]}"
-						  HotKey="Ctrl+Add"/>
+						  CommandParameter="{Binding $parent[Window]}"/>
 			</MenuItem>			
 
 			<MenuItem Header="_View"
@@ -94,16 +110,13 @@
 						Converter={x:Static ObjectConverters.IsNotNull}}">
 				<MenuItem Header="Search... [Ctrl+F]"
 						  Command="{Binding OpenSearchDialog}"
-						  CommandParameter="{Binding $parent[Window]}"
-						  HotKey="Ctrl+F"/>
+						  CommandParameter="{Binding $parent[Window]}"/>
 				<MenuItem Header="Open Filter... [Shift+F]"
 						  Command="{Binding OpenFilterDialog}"
-						  CommandParameter="{Binding $parent[Window]}"
-						  HotKey="Shift+F"/>
+						  CommandParameter="{Binding $parent[Window]}"/>
 				<MenuItem Header="Open Sorting... [Shift+S]"
 						  Command="{Binding OpenSortingDialog}"
-						  CommandParameter="{Binding $parent[Window]}"
-						  HotKey="Shift+F">
+						  CommandParameter="{Binding $parent[Window]}">
 				</MenuItem>
 			</MenuItem>
 		</Menu>

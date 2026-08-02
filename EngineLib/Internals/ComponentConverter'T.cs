@@ -92,7 +92,7 @@ internal class ComponentConverter<T> : JsonConverter<T>
                 }
             }
 
-            current[paths[^1]] = JsonValue.Create(propertyValue);
+            current[paths[^1]] = JsonSerializer.SerializeToNode(propertyValue, property.PropertyType, options);
         }
 
         var noType = type.GetCustomAttribute<NoTypeAnnotationAttribute>();
