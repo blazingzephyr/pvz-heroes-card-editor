@@ -425,6 +425,12 @@ internal partial class ObservableCardDescriptor : ObservableRecipient, ITabConta
         set => SetComponent(ref _multishot, Multishot, value, nameof(Multishot));
     }
 
+    public bool MultiplyDamage
+    {
+        get => _multiplyDamage is not null;
+        set => SetComponent(ref _multiplyDamage, MultiplyDamage, value, nameof(MultiplyDamage));
+    }
+
     public bool AttacksInAllLanes
     {
         get => _attacksInAllLanes is not null;
@@ -524,6 +530,7 @@ internal partial class ObservableCardDescriptor : ObservableRecipient, ITabConta
     private Surprise? _surprise;
     private PlaysFaceDown? _playsFaceDown;
     private Multishot? _multishot;
+    private MultiplyDamage? _multiplyDamage;
     private AttacksInAllLanes? _attacksInAllLanes;
     private AttacksOnlyInAdjacentLanes? _attacksOnlyInAdjacentLanes;
     private SplashDamage? _splashDamage;
@@ -616,6 +623,7 @@ internal partial class ObservableCardDescriptor : ObservableRecipient, ITabConta
                 case AttackOverride attackOverride: _attackOverride = attackOverride; break;
                 case PlaysFaceDown playsFaceDown: _playsFaceDown = playsFaceDown; break;
                 case Multishot multishot: _multishot = multishot; break;
+                case MultiplyDamage multiplyDamage: _multiplyDamage = multiplyDamage; break;
                 case AttacksInAllLanes attacksInAllLanes: _attacksInAllLanes = attacksInAllLanes; break;
                 case AttacksOnlyInAdjacentLanes attacksOnlyInAdjacentLanes: _attacksOnlyInAdjacentLanes = attacksOnlyInAdjacentLanes; break;
                 case SplashDamage splashDamage: _splashDamage = splashDamage; break;

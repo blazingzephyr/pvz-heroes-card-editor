@@ -281,7 +281,7 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
         }
         catch (Exception e)
         {
-            ShowPopup(window, $"Could not parse {file.Name}. {e.Message}");
+            ShowPopup(window, $"Could not parse {file.Name}. {e.Message}\n{e.StackTrace}");
         }
 
         if (dict is null)

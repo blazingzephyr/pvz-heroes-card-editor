@@ -383,6 +383,7 @@ internal static class CardProperties
         new OriginalTargetCardGuidQuery(),
         new SpringboardedOnSelfQuery(),
         new AttackComparisonQuery(),
+        new HealthComparisonQuery(),
         new SunCostPlusNComparisonQuery(),
         new IsAliveQuery(),
         new CompositeAllQuery(),

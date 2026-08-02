@@ -14,7 +14,7 @@ internal class ComponentConverter<T> : JsonConverter<T>
         if (typeNode is not null)
         {
             string typeName = typeNode.GetValue<string>();
-            type = Type.GetType(typeName) ?? throw new InvalidDataException();
+            type = Type.GetType(typeName) ?? throw new InvalidDataException($"Type '{typeName}' name not found.\n{node}");
         }
 
         object instance = Activator.CreateInstance(type) ?? throw new InvalidOperationException();
@@ -26,14 +26,18 @@ internal class ComponentConverter<T> : JsonConverter<T>
             if (jsonProperty == null) continue;
 
             JsonNode? current = typeNode is not null ? node["$data"] : node;
-            if (current == null) throw new InvalidOperationException();
+            if (current == null) throw new InvalidOperationException($"'$data' node not found.\n{node}");
 
+            else Console.WriteLine(current);
             foreach (var path in jsonProperty.Path)
             {
                 current = current[path];
                 if (current == null)
                 {
-                    if (jsonProperty.IsRequired) throw new InvalidOperationException();
+                    if (jsonProperty.IsRequired) {
+                        string fp = string.Join(".", jsonProperty.Path);
+                        throw new InvalidOperationException($"Property '{Type.FullName}.{fp}' is required.\n{node}");
+                    }
                     else break;
                 }
             }

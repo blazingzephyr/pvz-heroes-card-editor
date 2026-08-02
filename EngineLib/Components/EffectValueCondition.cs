@@ -6,7 +6,7 @@ namespace PvZCards.Engine.Components;
 public class EffectValueCondition : Component
 {
     [JsonProperty(Path = ["EffectValue"])]
-    public EffectValueType EffectValue { get; set; } = EffectValueType.TotalBuffAmount;
+    public EffectValueType EffectValue { get; set; }
 
     [JsonProperty(Path = ["ComparisonOperator"])]
     [DataTemplateField(Name = "Operator", Tooltip = "Which comparison operation is used")]
@@ -14,5 +14,5 @@ public class EffectValueCondition : Component
 
     [JsonProperty(Path = ["ValueAmount"])]
     [DataTemplateField(Name = "Value", Tooltip = "Comparison Value")]
-    public uint Value { get; set; } = 1;
+    public int Value { get; set; } = 1;
 }

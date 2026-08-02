@@ -140,6 +140,7 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
                 nameof(ObservableCardDescriptor.Frenzy),
                 nameof(ObservableCardDescriptor.Deadly),
                 nameof(ObservableCardDescriptor.Unhealable),
+                nameof(ObservableCardDescriptor.MultiplyDamage),
                 nameof(ObservableCardDescriptor.Untrickable),
                 nameof(ObservableCardDescriptor.AttackOverride),
                 nameof(ObservableCardDescriptor.Surprise),
