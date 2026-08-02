@@ -7,522 +7,526 @@
 					xmlns:dt="using:EngineLib.DataTemplates">
 	
 	<DataTemplate x:Key="ObservableCardDescriptor" x:DataType="m:ObservableCardDescriptor">
-		<ScrollViewer>
-			<StackPanel>
-				<Grid ColumnDefinitions="*,*,*" RowDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*">
-					<StackPanel Grid.Column="0"
-								Grid.Row="0"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Note"
-								   ToolTip.Tip="Does not affect the code, but useful for search options and so on."/>
-						<TextBox VerticalAlignment="Center"
-								 Text="{Binding Note, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
-					</StackPanel>
-
-					<StackPanel Grid.Column="1"
-								Grid.Row="0"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Prefab"
-								   ToolTip.Tip="Prefab name. This affects the visuals of the card."/>
-						<AutoCompleteBox VerticalAlignment="Center"
-								 Text="{Binding Descriptor.PrefabName, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
-					</StackPanel>
-					
-					<StackPanel Grid.Column="2"
-								Grid.Row="0"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Usable"
-								   ToolTip.Tip="Whether the card is visible in deck building and can be drawn."/>
-						<CheckBox IsChecked="{Binding Usable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-					</StackPanel>
-					
-					<StackPanel Grid.Column="0"
-								Grid.Row="1"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Type"
-								   ToolTip.Tip="Is this card a fighter or trick?"/>
-						<ComboBox ItemsSource="{x:Static m:CardProperties.CardTypes}"
-								  SelectedItem="{Binding Type, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-					</StackPanel>
-
-					<StackPanel Grid.Column="1"
-								Grid.Row="1"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Faction"
-								   ToolTip.Tip="Whether this card is a plant or zombie card."/>
-						<ComboBox ItemsSource="{x:Static m:CardProperties.Factions}"
-								  SelectedItem="{Binding Faction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-					</StackPanel>
-
-					<StackPanel Grid.Column="2"
-								Grid.Row="1"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Class"
-								   ToolTip.Tip="Card class. Do NOT use two classes for cards that aren't tokens or superpowers!"/>
-						<ComboBox ItemsSource="{x:Static m:CardProperties.Colors}"
-								  SelectedItem="{Binding Color, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-					</StackPanel>
-
-					<StackPanel Grid.Column="0"
-								Grid.Row="2"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Rarity"
-								   ToolTip.Tip="Card rarity. Affects the colors as far as I know."/>
-						<ComboBox ItemsSource="{x:Static m:CardProperties.Rarities}"
-								  SelectedItem="{Binding Rarity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-					</StackPanel>
-
-					<StackPanel Grid.Column="1"
-								Grid.Row="2"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<StackPanel Orientation="Horizontal" Spacing="15">
+	    <TabControl>
+            <TabItem Header="Properties">
+                <ScrollViewer>
+					<Grid ColumnDefinitions="*,*,*" RowDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*" RowSpacing="8">
+						<StackPanel Grid.Column="0"
+									Grid.Row="0"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
-									   Text="Set"
-									   ToolTip.Tip="Card set. Does not affect the visuals as far as I know."/>
-							<AutoCompleteBox ItemsSource="{x:Static m:CardProperties.Sets}"
-											 Text="{Binding Set, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+									Text="Note"
+									ToolTip.Tip="Does not affect the code, but useful for search options and so on."/>
+							<TextBox VerticalAlignment="Center"
+									Text="{Binding Note, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
 						</StackPanel>
-					</StackPanel>
 
-					<StackPanel Grid.Column="2"
-								Grid.Row="2"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Set and Rarity Key"
-								   ToolTip.Tip="Card set and rarity. Affects the label, e.g. Colossal - Super-rare."/>
-						<AutoCompleteBox ItemsSource="{x:Static m:CardProperties.SetAndRarityKeys}"
-										 Text="{Binding SetAndRarityKey, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
-					</StackPanel>
-
-					<StackPanel Grid.Column="0"
-								Grid.Row="3"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Superpower"
-								   ToolTip.Tip="Is this card considered a super-power?"/>
-						<CheckBox IsChecked="{Binding IsPower, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-					</StackPanel>
-
-					<StackPanel Grid.Column="1"
-								Grid.Row="3"
-								IsEnabled="{Binding IsPower, UpdateSourceTrigger=PropertyChanged}"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Signature Superpower"
-								   ToolTip.Tip="Is this superpower considered signature?"/>
-						<CheckBox IsChecked="{Binding IsPrimaryPower, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-					</StackPanel>
-
-					<StackPanel Grid.Column="2"
-								Grid.Row="3"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Ignore Deck Limit"
-								   ToolTip.Tip="Not exactly sure what this does, but I imagine it is for superpowers."/>
-						<CheckBox IsChecked="{Binding IgnoreDeckLimit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-					</StackPanel>
-
-					<StackPanel Grid.Column="0"
-								Grid.Row="4"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Crafting Buy"
-								   ToolTip.Tip="Sparks card creation cost."/>
-						<NumericUpDown Value="{Binding CraftingBuy, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-									   Minimum="0"
-									   Increment="1"/>
-					</StackPanel>
-
-					<StackPanel Grid.Column="1"
-								Grid.Row="4"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<StackPanel Orientation="Horizontal" Spacing="15">
+						<StackPanel Grid.Column="1"
+									Grid.Row="0"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
-									   Text="Crafting Sell"
-									   ToolTip.Tip="Sparks refunded for recycling the card."/>
-							<NumericUpDown Value="{Binding CraftingSell, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-										   Minimum="0"
-										   Increment="1"/>
+									Text="Prefab"
+									ToolTip.Tip="Prefab name. This affects the visuals of the card."/>
+							<AutoCompleteBox VerticalAlignment="Center"
+									Text="{Binding Descriptor.PrefabName, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
 						</StackPanel>
-					</StackPanel>
+						
+						<StackPanel Grid.Column="2"
+									Grid.Row="0"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Usable"
+									ToolTip.Tip="Whether the card is visible in deck building and can be drawn."/>
+							<CheckBox IsChecked="{Binding Usable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</StackPanel>
+						
+						<StackPanel Grid.Column="0"
+									Grid.Row="1"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Type"
+									ToolTip.Tip="Is this card a fighter or trick?"/>
+							<ComboBox ItemsSource="{x:Static m:CardProperties.CardTypes}"
+									SelectedItem="{Binding Type, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</StackPanel>
 
-					<StackPanel Grid.Column="2"
-								Grid.Row="4"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Sun Cost"
-								   ToolTip.Tip="Affects both display and real values."/>
-						<NumericUpDown Value="{Binding SunCost, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-									   Minimum="0"
-									   Increment="1"/>
-					</StackPanel>
+						<StackPanel Grid.Column="1"
+									Grid.Row="1"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Faction"
+									ToolTip.Tip="Whether this card is a plant or zombie card."/>
+							<ComboBox ItemsSource="{x:Static m:CardProperties.Factions}"
+									SelectedItem="{Binding Faction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</StackPanel>
 
-					<StackPanel Grid.Column="0"
-								Grid.Row="5"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Max Health"
-								   ToolTip.Tip="Affects both display and real values."/>
-						<NumericUpDown Value="{Binding MaxHealth, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-									   Minimum="0"
-									   Increment="1"/>
-					</StackPanel>
+						<StackPanel Grid.Column="2"
+									Grid.Row="1"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Class"
+									ToolTip.Tip="Card class. Do NOT use two classes for cards that aren't tokens or superpowers!"/>
+							<ComboBox ItemsSource="{x:Static m:CardProperties.Colors}"
+									SelectedItem="{Binding Color, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</StackPanel>
 
-					<StackPanel Grid.Column="1"
-								Grid.Row="5"
-								IsEnabled="{Binding MaxHealth}"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Current Damage Taken"
-								   ToolTip.Tip="Affects both display and real values. Probably 0 for all card in the game."/>
-						<NumericUpDown Value="{Binding CurrentDamage, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-									   Minimum="0"
-									   Increment="1"/>
-					</StackPanel>
+						<StackPanel Grid.Column="0"
+									Grid.Row="2"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Rarity"
+									ToolTip.Tip="Card rarity. Affects the colors as far as I know."/>
+							<ComboBox ItemsSource="{x:Static m:CardProperties.Rarities}"
+									SelectedItem="{Binding Rarity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</StackPanel>
 
-					<StackPanel Grid.Column="2"
-								Grid.Row="5"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Attack"
-								   ToolTip.Tip="Attack base value"/>
-						<NumericUpDown Value="{Binding Attack, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-									   Minimum="0"
-									   Increment="1"/>
-					</StackPanel>
-					
-					<StackPanel Grid.Column="0"
-								Grid.Row="6"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Surprise"
-								   ToolTip.Tip="Plays during Trick Phase."/>
-						<CheckBox IsChecked="{Binding Surprise, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-					</StackPanel>
-					
-					<StackPanel Grid.Column="1"
-								Grid.Row="6"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Plays As Gravestone"
-								   ToolTip.Tip="Works only for zombies."/>
-						<CheckBox IsChecked="{Binding PlaysFaceDown, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-					</StackPanel>
-					
-					<StackPanel Grid.Column="2"
-								Grid.Row="6"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Create In Front"
-								   ToolTip.Tip="Used for Plants with Team-Up and things spawned by abilities, such as Button shrooms."/>
-						<CheckBox IsChecked="{Binding CreateInFront, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-					</StackPanel>
+						<StackPanel Grid.Column="1"
+									Grid.Row="2"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<StackPanel Orientation="Horizontal" Spacing="15">
+								<TextBlock VerticalAlignment="Center"
+										Text="Set"
+										ToolTip.Tip="Card set. Does not affect the visuals as far as I know."/>
+								<AutoCompleteBox ItemsSource="{x:Static m:CardProperties.Sets}"
+												Text="{Binding Set, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+							</StackPanel>
+						</StackPanel>
 
-					<StackPanel Grid.Column="0"
-								Grid.Row="7"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Team-Up"
-								   ToolTip.Tip="Presumably usable only for plants."/>
-						<CheckBox IsChecked="{Binding IsTeamup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-					</StackPanel>
+						<StackPanel Grid.Column="2"
+									Grid.Row="2"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Set and Rarity Key"
+									ToolTip.Tip="Card set and rarity. Affects the label, e.g. Colossal - Super-rare."/>
+							<AutoCompleteBox ItemsSource="{x:Static m:CardProperties.SetAndRarityKeys}"
+											Text="{Binding SetAndRarityKey, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+						</StackPanel>
 
-					<StackPanel Grid.Column="1"
-								Grid.Row="7"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Aquatic"
-								   ToolTip.Tip="Affects both visual and real values."/>
-						<CheckBox IsChecked="{Binding IsAquatic, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-					</StackPanel>
+						<StackPanel Grid.Column="0"
+									Grid.Row="3"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Superpower"
+									ToolTip.Tip="Is this card considered a super-power?"/>
+							<CheckBox IsChecked="{Binding IsPower, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</StackPanel>
 
-					<StackPanel Grid.Column="2"
-								Grid.Row="7"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Armor"
-								   ToolTip.Tip="0 for no armor."/>
-						<NumericUpDown Minimum="0" Increment="1" Value="{Binding Armor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-					</StackPanel>
+						<StackPanel Grid.Column="1"
+									Grid.Row="3"
+									IsEnabled="{Binding IsPower, UpdateSourceTrigger=PropertyChanged}"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Signature Superpower"
+									ToolTip.Tip="Is this superpower considered signature?"/>
+							<CheckBox IsChecked="{Binding IsPrimaryPower, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</StackPanel>
 
-					<StackPanel Grid.Column="0"
-								Grid.Row="8"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Bullseye"/>
-						<CheckBox IsChecked="{Binding Truestrike, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-					</StackPanel>
+						<StackPanel Grid.Column="2"
+									Grid.Row="3"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Ignore Deck Limit"
+									ToolTip.Tip="Not exactly sure what this does, but I imagine it is for superpowers."/>
+							<CheckBox IsChecked="{Binding IgnoreDeckLimit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</StackPanel>
 
-					<StackPanel Grid.Column="1"
-								Grid.Row="8"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Strikethrough"/>
-						<CheckBox IsChecked="{Binding Strikethrough, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-					</StackPanel>
+						<StackPanel Grid.Column="0"
+									Grid.Row="4"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Crafting Buy"
+									ToolTip.Tip="Sparks card creation cost."/>
+							<NumericUpDown Value="{Binding CraftingBuy, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+										Minimum="0"
+										Increment="1"/>
+						</StackPanel>
 
-					<StackPanel Grid.Column="2"
-								Grid.Row="8"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Frenzy"
-								   ToolTip.Tip="Works for both plants and zombies."/>
-						<CheckBox IsChecked="{Binding Frenzy, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-					</StackPanel>
+						<StackPanel Grid.Column="1"
+									Grid.Row="4"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<StackPanel Orientation="Horizontal" Spacing="15">
+								<TextBlock VerticalAlignment="Center"
+										Text="Crafting Sell"
+										ToolTip.Tip="Sparks refunded for recycling the card."/>
+								<NumericUpDown Value="{Binding CraftingSell, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+											Minimum="0"
+											Increment="1"/>
+							</StackPanel>
+						</StackPanel>
 
-					<StackPanel Grid.Column="0"
-								Grid.Row="9"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Splash Damage"
-								   ToolTip.Tip="0 for no Splash Damage."/>
-						<NumericUpDown Minimum="0" Increment="1" Value="{Binding SplashDamage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-					</StackPanel>
+						<StackPanel Grid.Column="2"
+									Grid.Row="4"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Sun Cost"
+									ToolTip.Tip="Affects both display and real values."/>
+							<NumericUpDown Value="{Binding SunCost, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+										Minimum="0"
+										Increment="1"/>
+						</StackPanel>
 
-					<StackPanel Grid.Column="1"
-								Grid.Row="9"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Deadly"
-								   ToolTip.Tip="false to not use deadly."/>
-						<CheckBox IsChecked="{Binding Deadly, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-					</StackPanel>
+						<StackPanel Grid.Column="0"
+									Grid.Row="5"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Max Health"
+									ToolTip.Tip="Affects both display and real values."/>
+							<NumericUpDown Value="{Binding MaxHealth, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+										Minimum="0"
+										Increment="1"/>
+						</StackPanel>
 
-					<StackPanel Grid.Column="2"
-								Grid.Row="9"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Attack Override"
-								   ToolTip.Tip="Attacks using its health. -1 to not use this."/>
-						<NumericUpDown Minimum="-1" Increment="1" Value="{Binding AttackOverride, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-					</StackPanel>
+						<StackPanel Grid.Column="1"
+									Grid.Row="5"
+									IsEnabled="{Binding MaxHealth}"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Current Damage Taken"
+									ToolTip.Tip="Affects both display and real values. Probably 0 for all card in the game."/>
+							<NumericUpDown Value="{Binding CurrentDamage, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+										Minimum="0"
+										Increment="1"/>
+						</StackPanel>
 
-					<StackPanel Grid.Column="0"
-								Grid.Row="10"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Attacks Here And Next Door"
-								   ToolTip.Tip="Multishot, like Threepeater"/>
-						<CheckBox IsChecked="{Binding Multishot, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-					</StackPanel>
+						<StackPanel Grid.Column="2"
+									Grid.Row="5"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Attack"
+									ToolTip.Tip="Attack base value"/>
+							<NumericUpDown Value="{Binding Attack, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+										Minimum="0"
+										Increment="1"/>
+						</StackPanel>
+						
+						<StackPanel Grid.Column="0"
+									Grid.Row="6"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Surprise"
+									ToolTip.Tip="Plays during Trick Phase."/>
+							<CheckBox IsChecked="{Binding Surprise, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</StackPanel>
+						
+						<StackPanel Grid.Column="1"
+									Grid.Row="6"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Plays As Gravestone"
+									ToolTip.Tip="Works only for zombies."/>
+							<CheckBox IsChecked="{Binding PlaysFaceDown, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</StackPanel>
+						
+						<StackPanel Grid.Column="2"
+									Grid.Row="6"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Create In Front"
+									ToolTip.Tip="Used for Plants with Team-Up and things spawned by abilities, such as Button shrooms."/>
+							<CheckBox IsChecked="{Binding CreateInFront, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</StackPanel>
 
-					<StackPanel Grid.Column="1"
-								Grid.Row="10"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Attacks In All Lanes"
-								   ToolTip.Tip="Starfruit."/>
-						<CheckBox IsChecked="{Binding AttacksInAllLanes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-					</StackPanel>
+						<StackPanel Grid.Column="0"
+									Grid.Row="7"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Team-Up"
+									ToolTip.Tip="Presumably usable only for plants."/>
+							<CheckBox IsChecked="{Binding IsTeamup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</StackPanel>
 
-					<StackPanel Grid.Column="2"
-								Grid.Row="10"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Attacks Only In Adjacent Lanes"
-								   ToolTip.Tip="Rotobaga."/>
-						<CheckBox IsChecked="{Binding AttacksOnlyInAdjacentLanes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-					</StackPanel>
-					
-					<StackPanel Grid.Column="0"
-								Grid.Row="11"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Untrickable"
-								   ToolTip.Tip="-1 to not use Untrickable."/>
-						<NumericUpDown Minimum="-1" Increment="1" Value="{Binding Untrickable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-					</StackPanel>
-					
-					<StackPanel Grid.Column="1"
-								Grid.Row="11"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Unhealable"
-								   ToolTip.Tip="Whether this card can be healed. I imagine this is not used anywhere in the game by default."/>
-						<CheckBox IsChecked="{Binding Unhealable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-					</StackPanel>
+						<StackPanel Grid.Column="1"
+									Grid.Row="7"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Aquatic"
+									ToolTip.Tip="Affects both visual and real values."/>
+							<CheckBox IsChecked="{Binding IsAquatic, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</StackPanel>
 
-					<TextBox Grid.Column="2"
-								Grid.Row="11"
-								HorizontalAlignment="Center"
-								Text="{Binding Tags, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-								ToolTip.Tip="Card tags"/>
+						<StackPanel Grid.Column="2"
+									Grid.Row="7"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Armor"
+									ToolTip.Tip="0 for no armor."/>
+							<NumericUpDown Minimum="0" Increment="1" Value="{Binding Armor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</StackPanel>
 
-					<StackPanel Grid.Column="0"
-								Grid.Row="12"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Evolvable"
-								   ToolTip.Tip="Whether this can be evolved."/>
-						<CheckBox IsChecked="{Binding Evolvable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-					</StackPanel>
+						<StackPanel Grid.Column="0"
+									Grid.Row="8"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Bullseye"/>
+							<CheckBox IsChecked="{Binding Truestrike, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</StackPanel>
 
-					<StackPanel Grid.Column="1"
-								Grid.Row="12"
-								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Fusion"
-								   ToolTip.Tip="Whether anything can be springboarded onto this."/>
-						<CheckBox IsChecked="{Binding Springboard, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-					</StackPanel>
+						<StackPanel Grid.Column="1"
+									Grid.Row="8"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Strikethrough"/>
+							<CheckBox IsChecked="{Binding Strikethrough, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</StackPanel>
 
-					<StackPanel Grid.ColumnSpan="3"
-								Grid.Row="13"
-								IsEnabled="{Binding Evolvable, UpdateSourceTrigger=PropertyChanged}"
-								HorizontalAlignment="Left"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Evolution Restriction"
-								   ToolTip.Tip="Whether anything can be springboarded onto this."/>
-						<ComboBox VerticalAlignment="Center"
-								  ItemsSource="{x:Static m:CardProperties.Queries}"
-								  SelectedItem="{Binding EvolutionRestriction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-						<ContentControl VerticalAlignment="Center"
-										Content="{Binding EvolutionRestriction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-							<ContentControl.DataTemplates>
-								<dt:AdjacencyQueryDataTemplate/>
-								<dt:SingleIntegerQueryDataTemplate/>
-								<dt:AdjacentLaneQueryDataTemplate/>
-								<dt:InSameLaneQueryDataTemplate/>
-								<dt:OnTerrainQueryDataTemplate/>
-								<dt:OpenLaneQueryDataTemplate/>
-								<dt:SubsetQueryDataTemplate/>
-								<dt:ComparisonQueryDataTemplate/>
-								<dt:ComponentQueryDataTemplate/>
-								<dt:QueryWithSubqueryDataTemplate/>
-								<dt:CompositeQueryDataTemplate/>
-								<dt:QueryDataTemplate/>
-							</ContentControl.DataTemplates>
-						</ContentControl>
-					</StackPanel>
+						<StackPanel Grid.Column="2"
+									Grid.Row="8"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Frenzy"
+									ToolTip.Tip="Works for both plants and zombies."/>
+							<CheckBox IsChecked="{Binding Frenzy, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</StackPanel>
 
-					<StackPanel Grid.Column="0"
+						<StackPanel Grid.Column="0"
+									Grid.Row="9"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Splash Damage"
+									ToolTip.Tip="0 for no Splash Damage."/>
+							<NumericUpDown Minimum="0" Increment="1" Value="{Binding SplashDamage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</StackPanel>
+
+						<StackPanel Grid.Column="1"
+									Grid.Row="9"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Deadly"
+									ToolTip.Tip="false to not use deadly."/>
+							<CheckBox IsChecked="{Binding Deadly, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</StackPanel>
+
+						<StackPanel Grid.Column="2"
+									Grid.Row="9"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Attack Override"
+									ToolTip.Tip="Attacks using its health. -1 to not use this."/>
+							<NumericUpDown Minimum="-1" Increment="1" Value="{Binding AttackOverride, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</StackPanel>
+
+						<StackPanel Grid.Column="0"
+									Grid.Row="10"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Attacks Here And Next Door"
+									ToolTip.Tip="Multishot, like Threepeater"/>
+							<CheckBox IsChecked="{Binding Multishot, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</StackPanel>
+
+						<StackPanel Grid.Column="1"
+									Grid.Row="10"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Attacks In All Lanes"
+									ToolTip.Tip="Starfruit."/>
+							<CheckBox IsChecked="{Binding AttacksInAllLanes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</StackPanel>
+
+						<StackPanel Grid.Column="2"
+									Grid.Row="10"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Attacks Only In Adjacent Lanes"
+									ToolTip.Tip="Rotobaga."/>
+							<CheckBox IsChecked="{Binding AttacksOnlyInAdjacentLanes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</StackPanel>
+						
+						<StackPanel Grid.Column="0"
+									Grid.Row="11"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Untrickable"
+									ToolTip.Tip="-1 to not use Untrickable."/>
+							<NumericUpDown Minimum="-1" Increment="1" Value="{Binding Untrickable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</StackPanel>
+						
+						<StackPanel Grid.Column="1"
+									Grid.Row="11"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Unhealable"
+									ToolTip.Tip="Whether this card can be healed. I imagine this is not used anywhere in the game by default."/>
+							<CheckBox IsChecked="{Binding Unhealable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</StackPanel>
+
+						<TextBox Grid.Column="2"
+									Grid.Row="11"
+									HorizontalAlignment="Center"
+									Text="{Binding Tags, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+									ToolTip.Tip="Card tags"/>
+
+						<StackPanel Grid.Column="0"
+									Grid.Row="12"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Evolvable"
+									ToolTip.Tip="Whether this can be evolved."/>
+							<CheckBox IsChecked="{Binding Evolvable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</StackPanel>
+
+						<StackPanel Grid.Column="1"
+									Grid.Row="12"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Fusion"
+									ToolTip.Tip="Whether anything can be springboarded onto this."/>
+							<CheckBox IsChecked="{Binding Springboard, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</StackPanel>
+
+						<StackPanel Grid.ColumnSpan="3"
+									Grid.Row="13"
+									IsEnabled="{Binding Evolvable, UpdateSourceTrigger=PropertyChanged}"
+									HorizontalAlignment="Left"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Evolution Restriction"
+									ToolTip.Tip="Whether anything can be springboarded onto this."/>
+							<ComboBox VerticalAlignment="Center"
+									ItemsSource="{x:Static m:CardProperties.Queries}"
+									SelectedItem="{Binding EvolutionRestriction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+							<ContentControl VerticalAlignment="Center"
+											Content="{Binding EvolutionRestriction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+								<ContentControl.DataTemplates>
+									<dt:AdjacencyQueryDataTemplate/>
+									<dt:SingleIntegerQueryDataTemplate/>
+									<dt:AdjacentLaneQueryDataTemplate/>
+									<dt:InSameLaneQueryDataTemplate/>
+									<dt:OnTerrainQueryDataTemplate/>
+									<dt:OpenLaneQueryDataTemplate/>
+									<dt:SubsetQueryDataTemplate/>
+									<dt:ComparisonQueryDataTemplate/>
+									<dt:ComponentQueryDataTemplate/>
+									<dt:QueryWithSubqueryDataTemplate/>
+									<dt:CompositeQueryDataTemplate/>
+									<dt:QueryDataTemplate/>
+								</ContentControl.DataTemplates>
+							</ContentControl>
+						</StackPanel>
+
+						<StackPanel Grid.Column="0"
+									Grid.Row="14"
+									HorizontalAlignment="Center"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Granted Triggered Abilities"
+									ToolTip.Tip="For things such as Overshoot, Double-Strike and several others"/>
+							<StackPanel Orientation="Vertical" VerticalAlignment="Center">
+								<Button Content="Add New"
+										VerticalAlignment="Center"
+										Command="{Binding AddNewGrantedAbility}"/>
+								<Button Content="Remove"
+										VerticalAlignment="Center"
+										Command="{Binding RemoveGrantedAbility}"
+										CommandParameter="{Binding #grantedAbilities.SelectedItem}"/>
+							</StackPanel>
+							<ListBox x:Name="grantedAbilities" ItemsSource="{Binding GrantedAbilities}">
+								<ListBox.DataTemplates>
+									<dt:GrantedTriggeredAbilityDataTemplate/>
+								</ListBox.DataTemplates>
+							</ListBox>
+						</StackPanel>
+
+						<Expander Grid.Column="1"
 								Grid.Row="14"
 								HorizontalAlignment="Center"
-								Orientation="Horizontal"
-								Spacing="15">
-						<TextBlock VerticalAlignment="Center"
-								   Text="Granted Triggered Abilities"
-								   ToolTip.Tip="For things such as Overshoot, Double-Strike and several others"/>
-						<StackPanel Orientation="Vertical" VerticalAlignment="Center">
-							<Button Content="Add New"
-									VerticalAlignment="Center"
-									Command="{Binding AddNewGrantedAbility}"/>
-							<Button Content="Remove"
-									VerticalAlignment="Center"
-									Command="{Binding RemoveGrantedAbility}"
-									CommandParameter="{Binding #grantedAbilities.SelectedItem}"/>
-						</StackPanel>
-						<ListBox x:Name="grantedAbilities" ItemsSource="{Binding GrantedAbilities}">
-							<ListBox.DataTemplates>
-								<dt:GrantedTriggeredAbilityDataTemplate/>
-							</ListBox.DataTemplates>
-						</ListBox>
-					</StackPanel>
+								Header="Tribes">
+							<ListBox SelectionMode="Multiple,Toggle"
+									ItemsSource="{x:Static m:CardProperties.Subtypes}"
+									SelectedItems="{Binding Subtypes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</Expander>
 
-					<Expander Grid.Column="1"
-							  Grid.Row="14"
-							  HorizontalAlignment="Center"
-							  Header="Tribes">
-						<ListBox SelectionMode="Multiple,Toggle"
-								 ItemsSource="{x:Static m:CardProperties.Subtypes}"
-								 SelectedItems="{Binding Subtypes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-					</Expander>
+						<Expander Grid.Column="2"
+								Grid.Row="14"
+								HorizontalAlignment="Center"
+								Header="Visual Abilities">
+							<ListBox SelectionMode="Multiple,Toggle"
+									ItemsSource="{x:Static m:CardProperties.SpecialAbilities}"
+									SelectedItems="{Binding SpecialAbilities, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</Expander>
+					</Grid>
+                </ScrollViewer>
+            </TabItem>
 
-					<Expander Grid.Column="2"
-							  Grid.Row="14"
-							  HorizontalAlignment="Center"
-							  Header="Visual Abilities">
-						<ListBox SelectionMode="Multiple,Toggle"
-								 ItemsSource="{x:Static m:CardProperties.SpecialAbilities}"
-								 SelectedItems="{Binding SpecialAbilities, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-					</Expander>
-					
-					<StackPanel Grid.ColumnSpan="3"
-								Grid.Row="15"
-								Spacing="15">
+            <TabItem Header="Components">
+                <ScrollViewer>
+					<StackPanel>
 						<StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Spacing="15">
 							<TextBlock HorizontalAlignment="Left"
 									   VerticalAlignment="Center"
@@ -647,6 +651,11 @@
 										<ListBox ItemsSource="{Binding Components}" SelectedItem="{
 												 Binding $parent[ScrollViewer].((m:ObservableCardDescriptor)DataContext).SelectedComponent,
 												 Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+											<ListBox.ItemsPanel>
+												<ItemsPanelTemplate>
+													<VirtualizingStackPanel/>
+												</ItemsPanelTemplate>
+											</ListBox.ItemsPanel>
 											<ListBox.DataTemplates>
 
 												<dt:IntegerEffectDescriptorDataTemplate/>
@@ -692,8 +701,8 @@
 							</TabControl.DataTemplates>
 						</TabControl>
 					</StackPanel>
-				</Grid>
-			</StackPanel>
-		</ScrollViewer>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
 	</DataTemplate>
 </ResourceDictionary>

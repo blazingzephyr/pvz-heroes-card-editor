@@ -26,7 +26,7 @@ public partial class App : Application
         {
             var window = new EditorView();
             desktop.MainWindow = window;
-            InitializeAsync(window);
+            _ = InitializeAsync(window);
         }
 
         base.OnFrameworkInitializationCompleted();
