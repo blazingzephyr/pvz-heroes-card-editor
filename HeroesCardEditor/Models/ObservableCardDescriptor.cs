@@ -646,9 +646,9 @@ internal partial class ObservableCardDescriptor : ObservableRecipient, ITabConta
 
     public void AddNewGrantedAbility()
     {
-        if (GrantedAbilities is null)
+        if (_desc.Components.OfType<GrantedTriggeredAbilities>().FirstOrDefault() is not GrantedTriggeredAbilities gta)
         {
-            var gta = new GrantedTriggeredAbilities();
+            gta = new GrantedTriggeredAbilities();
             GrantedAbilities = gta.Abilities;
             _desc.Components.Add(gta);
         }
