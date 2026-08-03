@@ -103,6 +103,10 @@
 				<MenuItem Header="_Create New Card [Ctrl+Add]"
 						  Command="{Binding SelectedFile.CreateEmptyCard}"
 						  CommandParameter="{Binding $parent[Window]}"/>
+				<MenuItem Header="_Edit Code [Ctrl+E]"
+						  IsEnabled="{Binding !SelectedFile.HasUnsavedChanged}"
+						  Command="{Binding SelectedFile.EditCode}"
+						  CommandParameter="{Binding $parent[Window]}"/>
 			</MenuItem>			
 
 			<MenuItem Header="_View"

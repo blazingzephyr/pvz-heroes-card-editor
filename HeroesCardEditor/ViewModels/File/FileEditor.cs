@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
@@ -89,8 +90,9 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
 
     private readonly SourceCache<CardDescriptor, uint> _cache;
     private readonly ReadOnlyObservableCollection<ObservableCardDescriptor> _entries;
-
-    public FileEditor(IStorageFile file, IEnumerable<CardDescriptor> descriptors)
+    private readonly JsonSerializerOptions _options;
+    
+    public FileEditor(IStorageFile file, IEnumerable<CardDescriptor> descriptors, JsonSerializerOptions options)
     {
         File = file;
         Filter = new FileEditorFilter();
@@ -101,6 +103,7 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
         var filter = CreateObservable<FileEditorFilter, Func<ObservableCardDescriptor, bool>>(Filter, i => i!.BuildFilter);
         var comparer = CreateObservable(Sorting, i => i!.BuildComparer());
 
+        _options = options;
         _cache = new SourceCache<CardDescriptor, uint>(p => p.Components.OfType<Card>().First().Value);
         _cache.PopulateFrom(observable);
         _cache
@@ -157,7 +160,7 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
                 nameof(ObservableCardDescriptor.EED.Entities))            
             .Subscribe(p =>
             {
-                if (p is not null) p.HasUnsavedChanged = true;
+                p?.HasUnsavedChanged = true;
                 OnPropertyChanged(nameof(Entries));
             });
     }
@@ -288,5 +291,27 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
             .Merge(initialSetup)
             .Throttle(TimeSpan.FromMilliseconds(250))
             .Select(func);
+    }
+
+    public async void EditCode(Window window)
+    {
+        var rawEditorMv = new RawEditorViewModel(File);
+        var rawEditor = new RawEditorView() { DataContext = rawEditorMv };
+        await rawEditor.ShowDialog(window);
+
+        if (!rawEditorMv.Edited) return;
+        
+        var cards = await EditorViewModel.DeserializeFile(window, File, _options);
+        if (cards is null)
+        {
+            _cache.Clear();
+            return;
+        }
+
+        var observable = cards.ToObservable();
+        var filter = CreateObservable<FileEditorFilter, Func<ObservableCardDescriptor, bool>>(Filter, i => i!.BuildFilter);
+        var comparer = CreateObservable(Sorting, i => i!.BuildComparer());
+
+        _cache.PopulateFrom(observable);
     }
 }

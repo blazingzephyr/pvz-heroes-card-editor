@@ -261,6 +261,22 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
         preferencesWindow.ShowDialog(window);
     }
 
+    public static async Task<IEnumerable<CardDescriptor>?> DeserializeFile(Window window, IStorageFile file, JsonSerializerOptions options)
+    {
+        Stream fileStream = await file.OpenReadAsync();
+        Dictionary<string, CardDescriptor>? dict = null;
+        try
+        {
+            dict = JsonSerializer.Deserialize<Dictionary<string, CardDescriptor>>(fileStream, options);
+        }
+        catch (Exception e)
+        {
+            ShowPopup(window, $"Could not parse {file.Name}. {e.Message}\n{e.StackTrace}");
+        }
+
+        return dict?.Values;
+    }
+
     /// <summary>
     /// Opens a file.
     /// If possible, bookmarks it and saves it to recent history.
@@ -273,24 +289,10 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
         StorageItemProperties props = await file.GetBasicPropertiesAsync();
         if (!props.Size.HasValue) return false;
 
-        Stream fileStream = await file.OpenReadAsync();
-        Dictionary<string, CardDescriptor>? dict = null;
-        try
-        {
-            dict = JsonSerializer.Deserialize<Dictionary<string, CardDescriptor>>(fileStream, _options);
-        }
-        catch (Exception e)
-        {
-            ShowPopup(window, $"Could not parse {file.Name}. {e.Message}\n{e.StackTrace}");
-        }
-
-        if (dict is null)
-        {
-            fileStream.Close();
-            return false;
-        }
-
-        FileEditor editor = new FileEditor(file, dict.Values);
+        var cards = await DeserializeFile(window, file, _options);
+        if (cards is null) return false;
+        
+        FileEditor editor = new FileEditor(file, cards, _options);
         _editorCache.AddOrUpdate(editor);
 
         await SaveRecent(file);
