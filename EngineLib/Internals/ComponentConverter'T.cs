@@ -28,7 +28,6 @@ internal class ComponentConverter<T> : JsonConverter<T>
             JsonNode? current = typeNode is not null ? node["$data"] : node;
             if (current == null) throw new InvalidOperationException($"'$data' node not found.\n{node}");
 
-            else Console.WriteLine(current);
             foreach (var path in jsonProperty.Path)
             {
                 current = current[path];

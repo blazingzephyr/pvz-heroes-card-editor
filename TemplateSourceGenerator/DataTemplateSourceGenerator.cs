@@ -122,7 +122,7 @@ public class DataTemplateSourceGenerator : IIncrementalGenerator
                 var deriven2 = GetDerivenTypes(topLevelNamespace, baseTypeSymbol)
                     .Where(d => !GetDerivenTypes(topLevelNamespace, d).Any());
 
-                return deriven1.Concat(deriven2);
+                return deriven1.Concat(deriven2).OrderBy(p => p.Name);
             }
 
             var typeName = $"{namedType.ContainingNamespace}.{namedType.Name}";
@@ -234,14 +234,11 @@ public class DataTemplateSourceGenerator : IIncrementalGenerator
 
                         properties += $$"""
                             StackPanel addAndRemove = new StackPanel { Orientation = Orientation.Horizontal };
-                            ComboBox box = new ComboBox { ItemsSource = new Type[] {{{s}}} };
-                            box.ItemTemplate = new FuncDataTemplate<object>((o, c) =>
-                            {
-                                return new TextBlock { Text = o is Type t ? t.Name : o?.ToString() };
-                            });
+                            AutoCompleteBox box = new AutoCompleteBox { ItemsSource = new Type[] {{{s}}}, FilterMode = AutoCompleteFilterMode.ContainsOrdinal };
                             
                             box.SelectionChanged += (sender, e) =>
                             {
+                                if (e.AddedItems.Count < 1) return;
                                 object? instance = Activator.CreateInstance((Type)e.AddedItems[0]);
                                 (param as {{classType}}).{{name}}.Add(({{argType}})instance);
                                 (param as {{classType}}).CollectionChanged(({{argType}})instance);
