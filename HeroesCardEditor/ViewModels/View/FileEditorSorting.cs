@@ -95,7 +95,7 @@ internal partial class FileEditorSorting : ObservableRecipient
             (CardTypePriority, CardTypeDescending, p => p?.Type, DefaultComparer),
             (FactionPriority, FactionDescending, p => p?.Faction, DefaultComparer),
             (ColorPriority, ColorDescending, p => p?.Color, DefaultComparer),
-            (PrefabNamePriority, PrefabNameDescending, p => p?.PrefabName, StringComparer.CurrentCultureIgnoreCase.Compare),
+            (PrefabNamePriority, PrefabNameDescending, p => $"{p?.Name} {p?.Note} {p?.PrefabName}", StringComparer.CurrentCultureIgnoreCase.Compare),
             (RarityPriority, RarityDescending, p => p?.Rarity, DefaultComparer),
             (SunCostPriority, SunCostDescending, p => p?.SunCost, DefaultComparer),
             (AttackPriority, AttackDescending, p => p?.Attack, DefaultComparer),

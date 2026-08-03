@@ -502,6 +502,48 @@ internal partial class ObservableCardDescriptor : ObservableRecipient, ITabConta
         }
     }
 
+    public string? Name
+    {
+        get => GetFromLoc("name");
+        set => SetLoc("name", value, nameof(Name));
+    }
+
+    public string? ShortDesc
+    {
+        get => GetFromLoc("shortDesc");
+        set => SetLoc("shortDesc", value, nameof(ShortDesc));
+    }
+
+    public string? LongDesc
+    {
+        get => GetFromLoc("longDesc");
+        set => SetLoc("longDesc", value, nameof(LongDesc));
+    }
+
+    public string? FlavorText
+    {
+        get => GetFromLoc("flavorText");
+        set => SetLoc("flavorText", value, nameof(FlavorText));
+    }
+
+    public string? Targeting
+    {
+        get => GetFromLoc("Targeting");
+        set => SetLoc("Targeting", value, nameof(Targeting));
+    }
+
+    public string? HeraldFighter
+    {
+        get => GetFromLoc("heraldFighter");
+        set => SetLoc("heraldFighter", value, nameof(HeraldFighter));
+    }
+
+    public string? HeraldTrick
+    {
+        get => GetFromLoc("heraldTrick");
+        set => SetLoc("heraldTrick", value, nameof(HeraldTrick));
+    }
+
     public ObservableCollection<GrantedTriggeredAbility> GrantedAbilities { get; set; } = [];
     public ObservableCollection<SpecialAbility> SpecialAbilities { get; set; }
     public ObservableCollection<Tribe> Subtypes { get; set; }
@@ -513,6 +555,7 @@ internal partial class ObservableCardDescriptor : ObservableRecipient, ITabConta
     public EffectEntitiesDescriptor? EED { get; set; }
 
     public CardDescriptor Descriptor => _desc;
+    public IDictionary<string, string?>? Loc => _loc;
 
     private readonly CardDescriptor _desc;
     private readonly Card _card = new Card();
@@ -539,11 +582,13 @@ internal partial class ObservableCardDescriptor : ObservableRecipient, ITabConta
     private EvolutionRestriction? _evolutionRestriction;
     private Tags? _tagsComponent;
     private string _tags;
+    private readonly IDictionary<string, string?>? _loc;
 
-    public ObservableCardDescriptor(CardDescriptor inner)
+    public ObservableCardDescriptor(CardDescriptor inner, IDictionary<string, string?>? loc)
     {
         _desc = inner;
         _tags = string.Join(';', inner.Tags);
+        _loc = loc;
 
         SpecialAbilities = [.._desc.SpecialAbilities];
         SpecialAbilities.CollectionChanged += (s, e) =>
@@ -723,6 +768,26 @@ internal partial class ObservableCardDescriptor : ObservableRecipient, ITabConta
 
         Broadcast(oldValue, shouldExist, propertyName);
         OnPropertyChanged(propertyName);
+    }
+
+    private string? GetFromLoc(string key)
+    {
+        if (_loc is object)
+        {
+            _loc.TryGetValue($"{PrefabName}_{key}", out string? value);
+            return value;
+        }
+
+        return null;
+    }
+
+    private void SetLoc(string key, string? value, string propertyName)
+    {
+        if (_loc is object && value is not null)
+        {
+            _loc[key] = value;
+            OnPropertyChanged(propertyName);
+        }
     }
 
     private void SetBase(CardType type, Faction faction)

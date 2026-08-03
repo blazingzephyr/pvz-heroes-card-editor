@@ -10,10 +10,10 @@
 	    <TabControl>
             <TabItem Header="Properties">
                 <ScrollViewer>
-					<Grid ColumnDefinitions="*,*,*" RowDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*" RowSpacing="8">
+					<Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
 						<StackPanel Grid.Column="0"
 									Grid.Row="0"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -25,7 +25,7 @@
 
 						<StackPanel Grid.Column="1"
 									Grid.Row="0"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -37,7 +37,7 @@
 						
 						<StackPanel Grid.Column="2"
 									Grid.Row="0"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -48,7 +48,7 @@
 						
 						<StackPanel Grid.Column="0"
 									Grid.Row="1"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -60,7 +60,7 @@
 
 						<StackPanel Grid.Column="1"
 									Grid.Row="1"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -72,7 +72,7 @@
 
 						<StackPanel Grid.Column="2"
 									Grid.Row="1"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -84,7 +84,7 @@
 
 						<StackPanel Grid.Column="0"
 									Grid.Row="2"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -96,7 +96,7 @@
 
 						<StackPanel Grid.Column="1"
 									Grid.Row="2"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<StackPanel Orientation="Horizontal" Spacing="15">
@@ -110,7 +110,7 @@
 
 						<StackPanel Grid.Column="2"
 									Grid.Row="2"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -122,7 +122,7 @@
 
 						<StackPanel Grid.Column="0"
 									Grid.Row="3"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -134,7 +134,7 @@
 						<StackPanel Grid.Column="1"
 									Grid.Row="3"
 									IsEnabled="{Binding IsPower, UpdateSourceTrigger=PropertyChanged}"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -145,7 +145,7 @@
 
 						<StackPanel Grid.Column="2"
 									Grid.Row="3"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -156,7 +156,7 @@
 
 						<StackPanel Grid.Column="0"
 									Grid.Row="4"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -169,7 +169,7 @@
 
 						<StackPanel Grid.Column="1"
 									Grid.Row="4"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<StackPanel Orientation="Horizontal" Spacing="15">
@@ -184,7 +184,7 @@
 
 						<StackPanel Grid.Column="2"
 									Grid.Row="4"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -197,7 +197,7 @@
 
 						<StackPanel Grid.Column="0"
 									Grid.Row="5"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -211,7 +211,7 @@
 						<StackPanel Grid.Column="1"
 									Grid.Row="5"
 									IsEnabled="{Binding MaxHealth}"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -224,7 +224,7 @@
 
 						<StackPanel Grid.Column="2"
 									Grid.Row="5"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -237,7 +237,7 @@
 						
 						<StackPanel Grid.Column="0"
 									Grid.Row="6"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -248,7 +248,7 @@
 						
 						<StackPanel Grid.Column="1"
 									Grid.Row="6"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -259,7 +259,7 @@
 						
 						<StackPanel Grid.Column="2"
 									Grid.Row="6"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -270,7 +270,7 @@
 
 						<StackPanel Grid.Column="0"
 									Grid.Row="7"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -281,7 +281,7 @@
 
 						<StackPanel Grid.Column="1"
 									Grid.Row="7"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -292,7 +292,7 @@
 
 						<StackPanel Grid.Column="2"
 									Grid.Row="7"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -303,7 +303,7 @@
 
 						<StackPanel Grid.Column="0"
 									Grid.Row="8"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -313,7 +313,7 @@
 
 						<StackPanel Grid.Column="1"
 									Grid.Row="8"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -323,7 +323,7 @@
 
 						<StackPanel Grid.Column="2"
 									Grid.Row="8"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -334,7 +334,7 @@
 
 						<StackPanel Grid.Column="0"
 									Grid.Row="9"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -345,7 +345,7 @@
 
 						<StackPanel Grid.Column="1"
 									Grid.Row="9"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -356,7 +356,7 @@
 
 						<StackPanel Grid.Column="2"
 									Grid.Row="9"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -367,7 +367,7 @@
 
 						<StackPanel Grid.Column="0"
 									Grid.Row="10"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -378,7 +378,7 @@
 
 						<StackPanel Grid.Column="1"
 									Grid.Row="10"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -389,7 +389,7 @@
 
 						<StackPanel Grid.Column="2"
 									Grid.Row="10"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -400,7 +400,7 @@
 						
 						<StackPanel Grid.Column="0"
 									Grid.Row="11"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -411,7 +411,7 @@
 						
 						<StackPanel Grid.Column="1"
 									Grid.Row="11"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -422,13 +422,13 @@
 
 						<TextBox Grid.Column="2"
 									Grid.Row="11"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Text="{Binding Tags, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
 									ToolTip.Tip="Card tags"/>
 
 						<StackPanel Grid.Column="0"
 									Grid.Row="12"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -439,7 +439,7 @@
 
 						<StackPanel Grid.Column="1"
 									Grid.Row="12"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -450,7 +450,7 @@
 
 						<StackPanel Grid.Column="2"
 									Grid.Row="12"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -492,7 +492,7 @@
 
 						<StackPanel Grid.Column="0"
 									Grid.Row="14"
-									HorizontalAlignment="Center"
+									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
@@ -516,7 +516,7 @@
 
 						<Expander Grid.Column="1"
 								Grid.Row="14"
-								HorizontalAlignment="Center"
+								HorizontalAlignment="Left"
 								Header="Tribes">
 							<ListBox SelectionMode="Multiple,Toggle"
 									ItemsSource="{x:Static m:CardProperties.Subtypes}"
@@ -525,7 +525,7 @@
 
 						<Expander Grid.Column="2"
 								Grid.Row="14"
-								HorizontalAlignment="Center"
+								HorizontalAlignment="Left"
 								Header="Visual Abilities">
 							<ListBox SelectionMode="Multiple,Toggle"
 									ItemsSource="{x:Static m:CardProperties.SpecialAbilities}"
@@ -712,6 +712,91 @@
 							</TabControl.DataTemplates>
 						</TabControl>
 					</StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="Text"
+				IsEnabled="{Binding Loc,
+					Converter={x:Static ObjectConverters.IsNotNull}}">
+                <ScrollViewer>
+					<Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+						<StackPanel Grid.Row="0"
+									HorizontalAlignment="Left"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Name"
+									ToolTip.Tip="Name of the card in the localization entry."/>
+							<TextBox VerticalAlignment="Center"
+									Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+						</StackPanel>
+
+						<StackPanel Grid.Row="1"
+									HorizontalAlignment="Left"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Short Desc"
+									ToolTip.Tip="Short description of this card. Appears mid-battle."/>
+							<TextBox VerticalAlignment="Center"
+									Text="{Binding ShortDesc, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+						</StackPanel>
+						
+						<StackPanel Grid.Row="2"
+									HorizontalAlignment="Left"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Long Desc"
+									ToolTip.Tip="Long description of this card. Appears when you click on it in battle or in deck-building UI."/>
+							<TextBox VerticalAlignment="Center"
+									Text="{Binding LongDesc, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+						</StackPanel>
+						
+						<StackPanel Grid.Row="3"
+									HorizontalAlignment="Left"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Flavor Text"
+									ToolTip.Tip="Card's flavor text at the bottom."/>
+							<TextBox VerticalAlignment="Center"
+									Text="{Binding FlavorText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+						</StackPanel>
+
+						<StackPanel Grid.Row="4"
+									HorizontalAlignment="Left"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="Targeting"
+									ToolTip.Tip="Appears in battle if this card is targeting something."/>
+							<TextBox VerticalAlignment="Center"
+									Text="{Binding Targeting, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+						</StackPanel>
+
+						<StackPanel Grid.Row="5"
+									HorizontalAlignment="Left"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="HeraldFighter"
+									ToolTip.Tip="Used for special abilities to add text such as 'Conjured by'/'Made by'/'Transformed from'."/>
+							<TextBox VerticalAlignment="Center"
+									Text="{Binding HeraldFighter, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+						</StackPanel>
+
+						<StackPanel Grid.Row="6"
+									HorizontalAlignment="Left"
+									Orientation="Horizontal"
+									Spacing="15">
+							<TextBlock VerticalAlignment="Center"
+									Text="HeraldTrick"
+									ToolTip.Tip="Used for special abilities to add text such as 'Conjured by'/'Made by'/'Transformed from'."/>
+							<TextBox VerticalAlignment="Center"
+									Text="{Binding HeraldTrick, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+						</StackPanel>
+					</Grid>
                 </ScrollViewer>
             </TabItem>
         </TabControl>

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
@@ -11,6 +12,8 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CsvHelper;
+using CsvHelper.Configuration;
 using DynamicData;
 using DynamicData.Binding;
 using HeroesCardEditor.Models;
@@ -42,9 +45,12 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
     public ReadOnlyObservableCollection<RecentFile> Recents => _recents;
 
     private JsonSerializerOptions _options;
+    private readonly CsvConfiguration _locOptions;
     private readonly Preferences _prefs;
     private readonly FilePickerOpenOptions _fileOpenOptions;
+    private readonly FilePickerOpenOptions _locOpenOptions;
     private readonly FilePickerSaveOptions _fileSaveOptions;
+    private readonly FilePickerSaveOptions _locSaveOptions;
     private readonly SourceCache<FileEditor, Uri> _editorCache;
     private readonly SourceCache<RecentFile, Uri> _recentCache;
     private readonly ReadOnlyObservableCollection<FileEditor> _editors;
@@ -59,17 +65,45 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
             MimeTypes = ["json/*"]
         };
 
+        var csv = new FilePickerFileType("CSV")
+        {
+            Patterns = ["*.csv"],
+            AppleUniformTypeIdentifiers = ["public.csv"],
+            MimeTypes = ["csv/*"]
+        };
+
         _fileOpenOptions = new FilePickerOpenOptions
         {
             Title = "Open cards.json File",
-            AllowMultiple = true,
+            AllowMultiple = false,
             FileTypeFilter = [json]
+        };
+
+        _locOpenOptions = new FilePickerOpenOptions
+        {
+            Title = "Open LocalizedStrings.csv File",
+            AllowMultiple = false,
+            FileTypeFilter = [csv]
         };
 
         _fileSaveOptions = new FilePickerSaveOptions
         {
             Title = "Save As",
             FileTypeChoices = [new FilePickerFileType("JSON") { Patterns = ["*.json"] }]
+        };
+
+        _locSaveOptions = new FilePickerSaveOptions
+        {
+            Title = "Save As",
+            FileTypeChoices = [new FilePickerFileType("CSV") { Patterns = ["*.csv"] }]
+        };
+
+        _locOptions = new CsvConfiguration(CultureInfo.InvariantCulture) 
+        {
+            Delimiter = ",",                // Custom delimiter
+            HasHeaderRecord = false,        // No header
+            TrimOptions = TrimOptions.Trim, // Trim whitespace
+            IgnoreBlankLines = true,        // Skip empty lines
         };
 
         /// These are set later, this is just done so that there are no warnings...
@@ -138,9 +172,11 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
     public async Task OpenFileDialog(Window window)
     {
         var files = await window.StorageProvider.OpenFilePickerAsync(_fileOpenOptions);
-        foreach (IStorageFile? file in files)
+        var loc = await window.StorageProvider.OpenFilePickerAsync(_locOpenOptions);
+
+        if (files.Count == 1 && files[0] is not null)
         {
-            await OpenFile(window, file);
+            await OpenFile(window, files[0], loc.Count == 1 ? loc[0] : null);
         }
     }
 
@@ -152,7 +188,14 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
         if (o.Count == 2 && o[0] is Window window && o[1] is RecentFile recent)
         {
             var file = await window.StorageProvider.OpenFileBookmarkAsync(recent.Bookmark);
-            await OpenFile(window, file);
+            IStorageBookmarkFile? locBookmark = null;
+
+            if (recent.LocBookmark is string bookmark)
+            {
+                locBookmark = await window.StorageProvider.OpenFileBookmarkAsync(bookmark);
+            }
+
+            await OpenFile(window, file, locBookmark);
         }
     }
 
@@ -212,11 +255,12 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
     {
         if (SelectedFile is null) return;
         var file = await window.StorageProvider.SaveFilePickerAsync(_fileSaveOptions);
-        await SelectedFile.Save(_options, file);
+        var loc = await window.StorageProvider.SaveFilePickerAsync(_locSaveOptions);
+        await SelectedFile.Save(_options, file, loc);
 
         if (file is not null)
         {
-            await SaveRecent(file);
+            await SaveRecent(file, loc);
             ShowPopup(window, $"Saved {SelectedFile.CardCount} cards to {SelectedFile.File.Name}.");
         }
     }
@@ -263,7 +307,7 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
 
     public static async Task<IEnumerable<CardDescriptor>?> DeserializeFile(Window window, IStorageFile file, JsonSerializerOptions options)
     {
-        Stream fileStream = await file.OpenReadAsync();
+        using Stream fileStream = await file.OpenReadAsync();
         Dictionary<string, CardDescriptor>? dict = null;
         try
         {
@@ -281,7 +325,7 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
     /// Opens a file.
     /// If possible, bookmarks it and saves it to recent history.
     /// </summary>
-    private async Task<bool> OpenFile(Window window, IStorageFile? file)
+    private async Task<bool> OpenFile(Window window, IStorageFile? file, IStorageFile? loc)
     {
         if (file is null) return false;
         if (OpenedFiles.Any(p => p.File.Path == file.Path)) return false;
@@ -292,10 +336,36 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
         var cards = await DeserializeFile(window, file, _options);
         if (cards is null) return false;
         
-        FileEditor editor = new FileEditor(file, cards, _options);
+        Dictionary<string, string?>? locDict = null;
+        if (loc is not null)
+        {
+            using Stream locStream = await loc.OpenReadAsync();
+            locDict = new Dictionary<string, string?>();
+            
+            try
+            {
+                using var reader = new StreamReader(locStream);
+                using var csv = new CsvReader(reader, _locOptions);
+
+                while (csv.Read())
+                {
+                    var key = csv.GetField(0);
+                    var value = csv.GetField(1);
+                    if (key is not null)
+                        locDict[key] = value;
+                }
+            }
+            catch (Exception e)
+            {
+                locDict = null;
+                ShowPopup(window, $"Could not parse {file.Name}. {e.Message}\n{e.StackTrace}");
+            }
+        }
+
+        FileEditor editor = new FileEditor(file, loc, cards, locDict, _options, _locOptions);
         _editorCache.AddOrUpdate(editor);
 
-        await SaveRecent(file);
+        await SaveRecent(file, loc);
         ShowPopup(window, $"Found {editor.CardCount} cards in {editor.File.Name}.");
         return true;
     }
@@ -303,14 +373,23 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
     /// <summary>
     /// Saves a file to recent history.
     /// </summary>
-    private async Task SaveRecent(IStorageFile file)
+    private async Task SaveRecent(IStorageFile file, IStorageFile? loc)
     {
         if (file.CanBookmark)
         {
             var bookmark = await file.SaveBookmarkAsync();
             if (bookmark is not null)
             {
-                RecentFile recent = new RecentFile(bookmark, file.Name, file.Path, DateTime.Now);
+                string? locBookmark = null, locFileName = null;
+                Uri? locUri = null;
+
+                if (loc is not null && (locBookmark = await loc.SaveBookmarkAsync()) is not null)
+                {
+                    locFileName = loc.Name;
+                    locUri = loc.Path;
+                }
+
+                RecentFile recent = new RecentFile(bookmark, file.Name, file.Path, locBookmark, locFileName, locUri, DateTime.Now);
                 _recentCache.AddOrUpdate(recent);
             }
         }

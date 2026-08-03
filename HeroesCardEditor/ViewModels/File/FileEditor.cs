@@ -16,6 +16,8 @@ using HeroesCardEditor.Models;
 using PvZCards.Engine;
 using PvZCards.Engine.Components;
 using ReactiveUI;
+using CsvHelper;
+using CsvHelper.Configuration;
 
 namespace HeroesCardEditor.ViewModels;
 
@@ -31,6 +33,12 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
     /// </summary>
     [ObservableProperty]
     public partial IStorageFile File { get; private set; }
+
+    /// <summary>
+    /// The associated Avalonia localization file.
+    /// </summary>
+    [ObservableProperty]
+    public partial IStorageFile? LocFile { get; private set; }
 
     /// <summary>
     /// DynamicData dynamic filter wrapper.
@@ -82,6 +90,11 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
     /// All cards in this file.
     /// </summary>
     public ReadOnlyObservableCollection<ObservableCardDescriptor> Entries => _entries;
+
+    /// <summary>
+    /// All localization entries from loc file.
+    /// </summary>
+    public IDictionary<string, string?>? Loc => _loc;
     
     /// <summary>
     /// Used only when a file is being opened or saved, so that we don't expose cache.
@@ -91,10 +104,13 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
     private readonly SourceCache<CardDescriptor, uint> _cache;
     private readonly ReadOnlyObservableCollection<ObservableCardDescriptor> _entries;
     private readonly JsonSerializerOptions _options;
-    
-    public FileEditor(IStorageFile file, IEnumerable<CardDescriptor> descriptors, JsonSerializerOptions options)
+    private readonly IDictionary<string, string?>? _loc;
+    private readonly CsvConfiguration _locOptions;
+
+    public FileEditor(IStorageFile file, IStorageFile? loc, IEnumerable<CardDescriptor> descriptors, IDictionary<string, string?>? locDict, JsonSerializerOptions options, CsvConfiguration locOptions)
     {
         File = file;
+        LocFile = loc;
         Filter = new FileEditorFilter();
         Sorting = new FileEditorSorting();
         OpenedEntries = [];
@@ -103,12 +119,14 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
         var filter = CreateObservable<FileEditorFilter, Func<ObservableCardDescriptor, bool>>(Filter, i => i!.BuildFilter);
         var comparer = CreateObservable(Sorting, i => i!.BuildComparer());
 
+        _loc = locDict;
         _options = options;
+        _locOptions = locOptions;
         _cache = new SourceCache<CardDescriptor, uint>(p => p.Components.OfType<Card>().First().Value);
         _cache.PopulateFrom(observable);
         _cache
             .Connect()
-            .Transform(c => new ObservableCardDescriptor(c))
+            .Transform(c => new ObservableCardDescriptor(c, locDict))
             .AutoRefresh()
             .Filter(filter)
             .ObserveOn(RxApp.MainThreadScheduler)
@@ -157,7 +175,14 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
                 nameof(ObservableCardDescriptor.SpecialAbilities),
                 nameof(ObservableCardDescriptor.Subtypes),
                 nameof(ObservableCardDescriptor.EED),
-                nameof(ObservableCardDescriptor.EED.Entities))            
+                nameof(ObservableCardDescriptor.EED.Entities),
+                nameof(ObservableCardDescriptor.Name),
+                nameof(ObservableCardDescriptor.ShortDesc),
+                nameof(ObservableCardDescriptor.LongDesc),
+                nameof(ObservableCardDescriptor.FlavorText),
+                nameof(ObservableCardDescriptor.Targeting),
+                nameof(ObservableCardDescriptor.HeraldFighter),
+                nameof(ObservableCardDescriptor.HeraldTrick))
             .Subscribe(p =>
             {
                 p?.HasUnsavedChanged = true;
@@ -169,18 +194,37 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
     /// Saves cards to the file this editor points to (or a new location, if provided).
     /// Also takes options (I changed it from optional to required because otherwise it fails to write the file correctly).
     /// </summary>
-    public async Task Save(JsonSerializerOptions options, IStorageFile? destination = default)
+    public async Task Save(JsonSerializerOptions options, IStorageFile? destination = default, IStorageFile? loc = default)
     {
         if (destination is object)
         {
             File = destination;
         }
 
+        if (loc is object)
+        {
+            LocFile = loc;
+        }
+
         var dict = _cache.Items.ToDictionary(k => k.Components.OfType<Card>().First().Value.ToString());
         Stream writeStream = await File.OpenWriteAsync();
         JsonSerializer.Serialize(writeStream, dict, options);
-
         writeStream.Close();
+
+        if (LocFile is object && _loc is object)
+        {
+            Stream locStream = await LocFile.OpenWriteAsync();
+            using var writer = new StreamWriter(locStream);
+            using var csv = new CsvWriter(writer, _locOptions);
+
+            foreach (var kvp in _loc)
+            {
+                csv.WriteField(kvp.Key);
+                csv.WriteField(kvp.Value);
+                csv.NextRecord();
+            }
+        }
+
         HasUnsavedChanged = false;
     }
 

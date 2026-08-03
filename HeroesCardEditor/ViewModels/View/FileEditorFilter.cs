@@ -82,7 +82,7 @@ internal partial class FileEditorFilter : ObservableRecipient
         if (ByColor != Color.None && card.Color != ByColor) return false;
         if (!string.IsNullOrEmpty(ByPrefabName))
         {
-            if (!$"{card.Descriptor.Comment} {card.PrefabName}".Contains(ByPrefabName, StringComparison.CurrentCultureIgnoreCase))
+            if (!$"{card.Descriptor.Comment} {card.Name} {card.PrefabName}".Contains(ByPrefabName, StringComparison.CurrentCultureIgnoreCase))
                 return false;
         }
         if (ByRarity != null && card.Rarity != ByRarity) return false;
