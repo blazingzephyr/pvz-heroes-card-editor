@@ -747,7 +747,7 @@ internal partial class ObservableCardDescriptor : ObservableRecipient, ITabConta
         }
     }
 
-    private void SetComponent<T>(ref T? component, object oldValue, bool shouldExist, string propertyName, Action? afterAction = null)
+    private void SetComponent<T>(ref T? component, object? oldValue, bool shouldExist, string propertyName, Action? afterAction = null)
         where T : Component, new()
     {
         if (shouldExist)
@@ -785,7 +785,7 @@ internal partial class ObservableCardDescriptor : ObservableRecipient, ITabConta
     {
         if (_loc is object && value is not null)
         {
-            _loc[key] = value;
+            _loc[$"{PrefabName}_{key}"] = value;
             OnPropertyChanged(propertyName);
         }
     }

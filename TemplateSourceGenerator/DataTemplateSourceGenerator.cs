@@ -8,7 +8,9 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace TemplateSourceGenerator;
 
+#pragma warning disable RS1038 
 [Generator]
+#pragma warning restore RS1038
 public class DataTemplateSourceGenerator : IIncrementalGenerator
 {
     private IncrementalGeneratorInitializationContext _initContext;
@@ -329,6 +331,9 @@ public class DataTemplateSourceGenerator : IIncrementalGenerator
 
         return
             $$"""
+            #nullable enable
+            #pragma warning disable CS1696, CS8600, CS8602, CS8604, CS8625, CS8669, CS8767
+            
             using Avalonia.Controls;
             using Avalonia.Controls.Templates;
             using Avalonia.Data;
@@ -366,6 +371,7 @@ public class DataTemplateSourceGenerator : IIncrementalGenerator
                     return data is {{classType}};
                 }
             }
+            #pragma warning restore CS1696, CS8600, CS8602, CS8604, CS8625, CS8669, CS8767
             """;
     }
 

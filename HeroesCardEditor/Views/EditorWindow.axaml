@@ -11,7 +11,7 @@
         x:Class="HeroesCardEditor.EditorView"
         x:Name="RootWindow"
         x:DataType="vm:EditorViewModel"
-        Title="Plants vs. Zombies Heroes Card Editor">
+        Title="blazingzephyr's Plants vs. Zombies Heroes Card Editor">
 
     <Window.KeyBindings>
         <KeyBinding Gesture="Ctrl+O" Command="{Binding OpenFileDialog}" CommandParameter="{Binding #RootWindow}"/>
@@ -28,6 +28,9 @@
         <KeyBinding Gesture="Ctrl+Add"
                     Command="{Binding SelectedFile.CreateEmptyCard}"
                     CommandParameter="{Binding #RootWindow}"/>
+        <KeyBinding Gesture="Ctrl+E"
+					Command="{Binding SelectedFile.EditCode}"
+					CommandParameter="{Binding #RootWindow}"/>
 
         <KeyBinding Gesture="Ctrl+F" Command="{Binding OpenSearchDialog}" CommandParameter="{Binding #RootWindow}"/>
         <KeyBinding Gesture="Shift+F" Command="{Binding OpenFilterDialog}" CommandParameter="{Binding #RootWindow}"/>

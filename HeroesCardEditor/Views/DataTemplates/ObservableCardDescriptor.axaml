@@ -8,7 +8,7 @@
 	
 	<DataTemplate x:Key="ObservableCardDescriptor" x:DataType="m:ObservableCardDescriptor">
 	    <TabControl>
-            <TabItem Header="Properties">
+            <TabItem Header="Properties" FontSize="15">
                 <ScrollViewer>
 					<Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
 						<StackPanel Grid.Column="0"
@@ -535,18 +535,13 @@
                 </ScrollViewer>
             </TabItem>
 
-            <TabItem Header="Components">
+            <TabItem Header="Components" FontSize="15">
                 <ScrollViewer>
 					<StackPanel>
-						<StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Spacing="15">
-							<TextBlock HorizontalAlignment="Left"
-									   VerticalAlignment="Center"
-									   Text="Abilities"/>
-							<Button HorizontalAlignment="Right"
-									VerticalAlignment="Center"
-									Content="Add Effect Entity"
-									Command="{Binding CreateNewEffectDescriptor}"/>
-						</StackPanel>
+						<Button HorizontalAlignment="Right"
+								VerticalAlignment="Center"
+								Content="Add Effect Entity"
+								Command="{Binding CreateNewEffectDescriptor}"/>
 						
 						<TabControl
 								ItemsSource="{Binding EED.Entities, UpdateSourceTrigger=PropertyChanged}"
@@ -555,7 +550,8 @@
 							<TabControl.ItemTemplate>
 								<DataTemplate x:DataType="c:EffectEntity">
 									<TabItem Theme="{StaticResource DefaultTabItem}"
-											 Header="{Binding Components.Count}">
+											 Header="{Binding Components.Count}"
+											 FontSize="17">
 									</TabItem>
 								</DataTemplate>
 							</TabControl.ItemTemplate>
@@ -715,7 +711,7 @@
                 </ScrollViewer>
             </TabItem>
 
-            <TabItem Header="Text"
+            <TabItem Header="Text" FontSize="15"
 				IsEnabled="{Binding Loc,
 					Converter={x:Static ObjectConverters.IsNotNull}}">
                 <ScrollViewer>

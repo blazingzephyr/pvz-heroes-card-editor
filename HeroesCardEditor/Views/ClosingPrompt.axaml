@@ -12,7 +12,7 @@
 			 xmlns:components="using:PvZCards.Engine.Components"
         x:Class="HeroesCardEditor.CloseDialog"
 		x:DataType="vm:ClosingPromptViewModel"
-        Title="Plants vs. Zombies Heroes Card Editor">
+        Title="blazingzephyr's Plants vs. Zombies Heroes Card Editor">
 
 	<StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
 		<TextBlock TextWrapping="Wrap">

@@ -271,6 +271,16 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
     }
 
     /// <summary>
+    /// Closes an editor tab.
+    /// This does NOT delete the card itself!
+    /// </summary>
+    public void CloseOthers(ObservableCardDescriptor descriptor)
+    {
+        OpenedEntries.Clear();
+        OpenedEntries.Add(descriptor);
+    }
+
+    /// <summary>
     /// Creates a new card and fills it with default values.
     /// This also adds all essential components to the card.
     /// </summary>
@@ -339,6 +349,8 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
 
     public async void EditCode(Window window)
     {
+        if (HasUnsavedChanged) return;
+        
         var rawEditorMv = new RawEditorViewModel(File);
         var rawEditor = new RawEditorView() { DataContext = rawEditorMv };
         await rawEditor.ShowDialog(window);

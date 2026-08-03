@@ -4,7 +4,7 @@
 					xmlns:m="using:HeroesCardEditor.Models">
 
 	<DataTemplate x:Key="FileEditor" x:DataType="vm:FileEditor">
-		<Grid ColumnDefinitions="1*, 2*">
+		<Grid ColumnDefinitions="3*, 8*">
 			<ListBox x:Name="list"
 					 SelectedItem="{Binding SelectedEntry, UpdateSourceTrigger=PropertyChanged}"
 					 Grid.Column="0"
@@ -44,13 +44,13 @@
 							<DockPanel Margin="0,0,10,0">
 								<TextBlock DockPanel.Dock="Right"
 										   TextAlignment="Right"
-										   Text="{Binding Note}"/>
+										   Text="{Binding PrefabName}"/>
 
 								<TextBlock TextAlignment="Left">
 									<TextBlock.Text>
 										<MultiBinding StringFormat="{}{0}: {1}">
 											<Binding Path="Guid"/>
-											<Binding Path="PrefabName"/>
+											<Binding Path="Name"/>
 										</MultiBinding>
 									</TextBlock.Text>
 								</TextBlock>
@@ -67,11 +67,19 @@
 				<TabControl.ItemTemplate>
 					<DataTemplate x:DataType="m:ObservableCardDescriptor">
 						<TabItem Theme="{StaticResource DefaultTabItem}"
-								 Header="{Binding Guid}">
+								 Header="{Binding Name}"
+								 FontSize="17">
+							<TabItem.ContextMenu>
+								<ContextMenu>
+									<MenuItem Header="Close Others"
+											Command="{Binding $parent[TabControl].((vm:FileEditor)DataContext).CloseOthers}"
+											CommandParameter="{Binding}"/>
+								</ContextMenu>
+							</TabItem.ContextMenu>
 							<ToolTip.Tip>
 								<MultiBinding StringFormat="{}{0} {1}">
+									<Binding Path="Guid"/>
 									<Binding Path="PrefabName"/>
-									<Binding Path="Note"/>
 								</MultiBinding>
 							</ToolTip.Tip>
 						</TabItem>
