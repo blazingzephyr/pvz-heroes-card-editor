@@ -383,11 +383,11 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
         // Update opened tabs.
         for (int i = 0; i < OpenedEntries.Count; i++)
         {
-            for (int j = 0; j < Entries.Count; j++)
+            for (int j = 0; j < _entries.Count; j++)
             {
-                if (Entries[j].Guid == OpenedEntries[i].Guid)
+                if (_entries[j].Guid == OpenedEntries[i].Guid)
                 {
-                    OpenedEntries[i] = Entries[j];
+                    OpenedEntries[i] = _entries[j];
                     break;
                 }
             }
