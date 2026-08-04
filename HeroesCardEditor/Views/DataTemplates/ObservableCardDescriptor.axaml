@@ -10,7 +10,7 @@
 	    <TabControl>
             <TabItem Header="Properties" FontSize="15">
                 <ScrollViewer>
-					<Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+					<Grid ColumnDefinitions="10*,11*,10*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
 						<StackPanel Grid.Column="0"
 									Grid.Row="0"
 									HorizontalAlignment="Left"
@@ -182,15 +182,17 @@
 							</StackPanel>
 						</StackPanel>
 
+
 						<StackPanel Grid.Column="2"
 									Grid.Row="4"
+									IsEnabled="{Binding MaxHealth}"
 									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
-									Text="Sun Cost"
-									ToolTip.Tip="Affects both display and real values."/>
-							<NumericUpDown Value="{Binding SunCost, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+									Text="Current Damage Taken"
+									ToolTip.Tip="Affects both display and real values. Probably 0 for all card in the game."/>
+							<NumericUpDown Value="{Binding CurrentDamage, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
 										Minimum="0"
 										Increment="1"/>
 						</StackPanel>
@@ -210,14 +212,13 @@
 
 						<StackPanel Grid.Column="1"
 									Grid.Row="5"
-									IsEnabled="{Binding MaxHealth}"
 									HorizontalAlignment="Left"
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
-									Text="Current Damage Taken"
-									ToolTip.Tip="Affects both display and real values. Probably 0 for all card in the game."/>
-							<NumericUpDown Value="{Binding CurrentDamage, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+									Text="Sun Cost"
+									ToolTip.Tip="Affects both display and real values."/>
+							<NumericUpDown Value="{Binding SunCost, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
 										Minimum="0"
 										Increment="1"/>
 						</StackPanel>
@@ -423,6 +424,9 @@
 						<TextBox Grid.Column="2"
 									Grid.Row="11"
 									HorizontalAlignment="Left"
+									VerticalAlignment="Center"
+									AcceptsReturn="True"
+									TextWrapping="Wrap"
 									Text="{Binding Tags, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
 									ToolTip.Tip="Card tags"/>
 
@@ -496,7 +500,7 @@
 									Orientation="Horizontal"
 									Spacing="15">
 							<TextBlock VerticalAlignment="Center"
-									Text="Granted Triggered Abilities"
+									Text="Triggered Abilities"
 									ToolTip.Tip="For things such as Overshoot, Double-Strike and several others"/>
 							<StackPanel Orientation="Vertical" VerticalAlignment="Center">
 								<Button Content="Add New"
@@ -507,7 +511,8 @@
 										Command="{Binding RemoveGrantedAbility}"
 										CommandParameter="{Binding #grantedAbilities.SelectedItem}"/>
 							</StackPanel>
-							<ListBox x:Name="grantedAbilities" ItemsSource="{Binding GrantedAbilities}">
+							<ListBox x:Name="grantedAbilities" ItemsSource="{Binding GrantedAbilities}"
+									MaxHeight="375">
 								<ListBox.DataTemplates>
 									<dt:GrantedTriggeredAbilityDataTemplate/>
 								</ListBox.DataTemplates>
@@ -519,17 +524,31 @@
 								HorizontalAlignment="Left"
 								Header="Tribes">
 							<ListBox SelectionMode="Multiple,Toggle"
+									MaxHeight="375"
 									ItemsSource="{x:Static m:CardProperties.Subtypes}"
-									SelectedItems="{Binding Subtypes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+									SelectedItems="{Binding Subtypes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+								<ListBox.ItemsPanel>
+									<ItemsPanelTemplate>
+										<WrapPanel Orientation="Vertical" MaxHeight="375"/>
+									</ItemsPanelTemplate>
+								</ListBox.ItemsPanel>
+							</ListBox>
 						</Expander>
 
 						<Expander Grid.Column="2"
 								Grid.Row="14"
 								HorizontalAlignment="Left"
-								Header="Visual Abilities">
+								Header="SpecialAbilities">
 							<ListBox SelectionMode="Multiple,Toggle"
+									MaxHeight="375"
 									ItemsSource="{x:Static m:CardProperties.SpecialAbilities}"
-									SelectedItems="{Binding SpecialAbilities, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+									SelectedItems="{Binding SpecialAbilities, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+								<ListBox.ItemsPanel>
+									<ItemsPanelTemplate>
+										<WrapPanel Orientation="Vertical" MaxHeight="375"/>
+									</ItemsPanelTemplate>
+								</ListBox.ItemsPanel>
+							</ListBox>
 						</Expander>
 					</Grid>
                 </ScrollViewer>
@@ -716,82 +735,103 @@
 					Converter={x:Static ObjectConverters.IsNotNull}}">
                 <ScrollViewer>
 					<Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
-						<StackPanel Grid.Row="0"
-									HorizontalAlignment="Left"
-									Orientation="Horizontal"
-									Spacing="15">
-							<TextBlock VerticalAlignment="Center"
+						<Grid Grid.Row="0" ColumnDefinitions="Auto,*">
+							<TextBlock Grid.Column="0"
+									VerticalAlignment="Center"
+									Margin="0,0,15,0"
 									Text="Name"
 									ToolTip.Tip="Name of the card in the localization entry."/>
-							<TextBox VerticalAlignment="Center"
+							<TextBox Grid.Column="1"
+									VerticalAlignment="Center"
+									AcceptsReturn="True"
+									TextWrapping="Wrap"
+									HorizontalAlignment="Stretch"
 									Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
-						</StackPanel>
+						</Grid>
 
-						<StackPanel Grid.Row="1"
-									HorizontalAlignment="Left"
-									Orientation="Horizontal"
-									Spacing="15">
-							<TextBlock VerticalAlignment="Center"
+						<Grid Grid.Row="1" ColumnDefinitions="Auto,*">
+							<TextBlock Grid.Column="0"
+									VerticalAlignment="Center"
+									Margin="0,0,15,0"
 									Text="Short Desc"
 									ToolTip.Tip="Short description of this card. Appears mid-battle."/>
-							<TextBox VerticalAlignment="Center"
+							<TextBox Grid.Column="1"
+									VerticalAlignment="Center"
+									AcceptsReturn="True"
+									TextWrapping="Wrap"
+									HorizontalAlignment="Stretch"
 									Text="{Binding ShortDesc, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
-						</StackPanel>
+						</Grid>
 						
-						<StackPanel Grid.Row="2"
-									HorizontalAlignment="Left"
-									Orientation="Horizontal"
-									Spacing="15">
-							<TextBlock VerticalAlignment="Center"
+						<Grid Grid.Row="2" ColumnDefinitions="Auto,*">
+							<TextBlock Grid.Column="0"
+									VerticalAlignment="Center"
+									Margin="0,0,15,0"
 									Text="Long Desc"
 									ToolTip.Tip="Long description of this card. Appears when you click on it in battle or in deck-building UI."/>
-							<TextBox VerticalAlignment="Center"
+							<TextBox Grid.Column="1"
+									VerticalAlignment="Center"
+									AcceptsReturn="True"
+									TextWrapping="Wrap"
+									HorizontalAlignment="Stretch"
 									Text="{Binding LongDesc, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
-						</StackPanel>
+						</Grid>
 						
-						<StackPanel Grid.Row="3"
-									HorizontalAlignment="Left"
-									Orientation="Horizontal"
-									Spacing="15">
-							<TextBlock VerticalAlignment="Center"
+						<Grid Grid.Row="3" ColumnDefinitions="Auto,*">
+							<TextBlock Grid.Column="0"
+									VerticalAlignment="Center"
+									Margin="0,0,15,0"
 									Text="Flavor Text"
 									ToolTip.Tip="Card's flavor text at the bottom."/>
-							<TextBox VerticalAlignment="Center"
+							<TextBox Grid.Column="1"
+									VerticalAlignment="Center"
+									AcceptsReturn="True"
+									TextWrapping="Wrap"
+									HorizontalAlignment="Stretch"
 									Text="{Binding FlavorText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
-						</StackPanel>
+						</Grid>
 
-						<StackPanel Grid.Row="4"
-									HorizontalAlignment="Left"
-									Orientation="Horizontal"
-									Spacing="15">
-							<TextBlock VerticalAlignment="Center"
+						<Grid Grid.Row="4" ColumnDefinitions="Auto,*">
+							<TextBlock Grid.Column="0"
+									VerticalAlignment="Center"
+									Margin="0,0,15,0"
 									Text="Targeting"
 									ToolTip.Tip="Appears in battle if this card is targeting something."/>
-							<TextBox VerticalAlignment="Center"
+							<TextBox Grid.Column="1"
+									VerticalAlignment="Center"
+									AcceptsReturn="True"
+									TextWrapping="Wrap"
+									HorizontalAlignment="Stretch"
 									Text="{Binding Targeting, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
-						</StackPanel>
+						</Grid>
 
-						<StackPanel Grid.Row="5"
-									HorizontalAlignment="Left"
-									Orientation="Horizontal"
-									Spacing="15">
-							<TextBlock VerticalAlignment="Center"
-									Text="HeraldFighter"
+						<Grid Grid.Row="5" ColumnDefinitions="Auto,*">
+							<TextBlock Grid.Column="0"
+									VerticalAlignment="Center"
+									Margin="0,0,15,0"
+									Text="Herald Fighter"
 									ToolTip.Tip="Used for special abilities to add text such as 'Conjured by'/'Made by'/'Transformed from'."/>
-							<TextBox VerticalAlignment="Center"
+							<TextBox Grid.Column="1"
+									VerticalAlignment="Center"
+									AcceptsReturn="True"
+									TextWrapping="Wrap"
+									HorizontalAlignment="Stretch"
 									Text="{Binding HeraldFighter, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
-						</StackPanel>
+						</Grid>
 
-						<StackPanel Grid.Row="6"
-									HorizontalAlignment="Left"
-									Orientation="Horizontal"
-									Spacing="15">
-							<TextBlock VerticalAlignment="Center"
-									Text="HeraldTrick"
+						<Grid Grid.Row="6" ColumnDefinitions="Auto,*">
+							<TextBlock Grid.Column="0"
+									VerticalAlignment="Center"
+									Margin="0,0,15,0"
+									Text="Herald Trick"
 									ToolTip.Tip="Used for special abilities to add text such as 'Conjured by'/'Made by'/'Transformed from'."/>
-							<TextBox VerticalAlignment="Center"
+							<TextBox Grid.Column="1"
+									VerticalAlignment="Center"
+									AcceptsReturn="True"
+									TextWrapping="Wrap"
+									HorizontalAlignment="Stretch"
 									Text="{Binding HeraldTrick, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
-						</StackPanel>
+						</Grid>
 					</Grid>
                 </ScrollViewer>
             </TabItem>
