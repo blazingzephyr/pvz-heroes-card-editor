@@ -14,27 +14,27 @@
         Title="blazingzephyr's Plants vs. Zombies Heroes Card Editor">
 
     <Window.KeyBindings>
-        <KeyBinding Gesture="Ctrl+O" Command="{Binding OpenFileDialog}" CommandParameter="{Binding #RootWindow}"/>
-        <KeyBinding Gesture="Ctrl+S" Command="{Binding SaveFile}" CommandParameter="{Binding #RootWindow}"/>
-        <KeyBinding Gesture="Ctrl+Shift+S" Command="{Binding SaveFileAs}" CommandParameter="{Binding #RootWindow}"/>
-        <KeyBinding Gesture="Ctrl+P" Command="{Binding OpenPreferences}" CommandParameter="{Binding #RootWindow}"/>
+        <KeyBinding Gesture="Ctrl+O" Command="{Binding OpenFileDialogCommand}" CommandParameter="{Binding #RootWindow}"/>
+        <KeyBinding Gesture="Ctrl+S" Command="{Binding SaveFileCommand}" CommandParameter="{Binding #RootWindow}"/>
+        <KeyBinding Gesture="Ctrl+Shift+S" Command="{Binding SaveFileAsCommand}" CommandParameter="{Binding #RootWindow}"/>
+        <KeyBinding Gesture="Ctrl+P" Command="{Binding OpenPreferencesCommand}" CommandParameter="{Binding #RootWindow}"/>
 
         <KeyBinding Gesture="Delete"
-                    Command="{Binding SelectedFile.SelectedTab.DeleteSelectedEffectComponent}"
+                    Command="{Binding SelectedFile.SelectedTab.DeleteSelectedEffectComponentCommand}"
                     CommandParameter="{Binding SelectedFile.SelectedTab.SelectedComponent}"/>
         <KeyBinding Gesture="Ctrl+Delete"
-                    Command="{Binding SelectedFile.DeleteSelectedCard}"
+                    Command="{Binding SelectedFile.DeleteSelectedCardCommand}"
                     CommandParameter="{Binding #RootWindow}"/>
         <KeyBinding Gesture="Ctrl+Add"
-                    Command="{Binding SelectedFile.CreateEmptyCard}"
+                    Command="{Binding SelectedFile.CreateEmptyCardCommand}"
                     CommandParameter="{Binding #RootWindow}"/>
         <KeyBinding Gesture="Ctrl+E"
-					Command="{Binding SelectedFile.EditCode}"
+					Command="{Binding SelectedFile.EditCodeCommand}"
 					CommandParameter="{Binding #RootWindow}"/>
 
-        <KeyBinding Gesture="Ctrl+F" Command="{Binding OpenSearchDialog}" CommandParameter="{Binding #RootWindow}"/>
-        <KeyBinding Gesture="Shift+F" Command="{Binding OpenFilterDialog}" CommandParameter="{Binding #RootWindow}"/>
-        <KeyBinding Gesture="Shift+S" Command="{Binding OpenSortingDialog}" CommandParameter="{Binding #RootWindow}"/>
+        <KeyBinding Gesture="Ctrl+F" Command="{Binding OpenSearchDialogCommand}" CommandParameter="{Binding #RootWindow}"/>
+        <KeyBinding Gesture="Shift+F" Command="{Binding OpenFilterDialogCommand}" CommandParameter="{Binding #RootWindow}"/>
+        <KeyBinding Gesture="Shift+S" Command="{Binding OpenSortingDialogCommand}" CommandParameter="{Binding #RootWindow}"/>
     </Window.KeyBindings>
 
 	<Window.ContextFlyout>

@@ -18,6 +18,7 @@ using PvZCards.Engine.Components;
 using ReactiveUI;
 using CsvHelper;
 using CsvHelper.Configuration;
+using CommunityToolkit.Mvvm.Input;
 
 namespace HeroesCardEditor.ViewModels;
 
@@ -33,6 +34,12 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
     /// </summary>
     [ObservableProperty]
     public partial IStorageFile File { get; private set; }
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(CreateEmptyCardCommand))]
+    [NotifyCanExecuteChangedFor(nameof(DeleteSelectedCardCommand))]
+    [NotifyCanExecuteChangedFor(nameof(EditCodeCommand))]
+    public partial bool CanUseKeybindings { get; set; }
 
     /// <summary>
     /// The associated Avalonia localization file.
@@ -284,6 +291,7 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
     /// Creates a new card and fills it with default values.
     /// This also adds all essential components to the card.
     /// </summary>
+    [RelayCommand(CanExecute = nameof(CanUseKeybindings))]
     public void CreateEmptyCard()
     {
         CardDescriptor card = new CardDescriptor
@@ -309,6 +317,7 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
     /// Self-explainatory.
     /// Some indexing logic might be broken here, feel free to fix it if you know how to!
     /// </summary>
+    [RelayCommand(CanExecute = nameof(CanUseKeybindings))]
     public void DeleteSelectedCard()
     {
         if (SelectedTab is null) return;
@@ -347,7 +356,8 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
             .Select(func);
     }
 
-    public async void EditCode(Window window)
+    [RelayCommand(CanExecute = nameof(CanUseKeybindings))]
+    public async Task EditCode(Window window)
     {
         if (HasUnsavedChanged) return;
         

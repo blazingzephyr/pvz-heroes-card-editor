@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using DynamicData;
 using DynamicData.Binding;
 using HeroesCardEditor.ViewModels;
@@ -22,6 +23,10 @@ namespace HeroesCardEditor.Models;
 /// </summary>
 internal partial class ObservableCardDescriptor : ObservableRecipient, ITabContainer
 {
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(DeleteSelectedEffectComponentCommand))]
+    public partial bool CanUseKeybindings { get; set; }
+
     [ObservableProperty]
     public partial bool HasUnsavedChanged { get; set; }
 
@@ -901,6 +906,7 @@ internal partial class ObservableCardDescriptor : ObservableRecipient, ITabConta
         }
     }
 
+    [RelayCommand(CanExecute = nameof(CanUseKeybindings))]
     public void DeleteSelectedEffectComponent(Component o)
     {
         SelectedEntity?.Components.Remove(o);

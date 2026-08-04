@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CsvHelper;
 using CsvHelper.Configuration;
 using DynamicData;
@@ -33,6 +34,16 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
     /// </summary>
     [ObservableProperty]
     public partial FileEditor? SelectedFile { get; set; }
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(OpenFileDialogCommand))]
+    [NotifyCanExecuteChangedFor(nameof(SaveFileCommand))]
+    [NotifyCanExecuteChangedFor(nameof(SaveFileAsCommand))]
+    [NotifyCanExecuteChangedFor(nameof(OpenPreferencesCommand))]
+    [NotifyCanExecuteChangedFor(nameof(OpenSearchDialogCommand))]
+    [NotifyCanExecuteChangedFor(nameof(OpenFilterDialogCommand))]
+    [NotifyCanExecuteChangedFor(nameof(OpenSortingDialogCommand))]
+    public partial bool CanUseKeybindings { get; set; } = true;
 
     /// <summary>
     /// Currently opened files.
@@ -169,6 +180,7 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
     /// <summary>
     /// Opens a file using file dialog.
     /// </summary>
+    [RelayCommand(CanExecute = nameof(CanUseKeybindings))]
     public async Task OpenFileDialog(Window window)
     {
         var files = await window.StorageProvider.OpenFilePickerAsync(_fileOpenOptions);
@@ -240,6 +252,7 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
     /// <summary>
     /// Saves any recorded changes within the currently selected file.
     /// </summary>
+    [RelayCommand(CanExecute = nameof(CanUseKeybindings))]
     public async Task SaveFile(Window window)
     {
         if (SelectedFile is null) return;
@@ -251,6 +264,7 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
     /// <summary>
     /// Saves the currently selected file to a new destination.
     /// </summary>
+    [RelayCommand(CanExecute = nameof(CanUseKeybindings))]
     public async Task SaveFileAs(Window window)
     {
         if (SelectedFile is null) return;
@@ -268,6 +282,7 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
     /// <summary>
     /// Opens the search dialog.
     /// </summary>
+    [RelayCommand(CanExecute = nameof(CanUseKeybindings))]
     public void OpenSearchDialog(Window window)
     {
         if (SelectedFile is null) return;
@@ -279,6 +294,7 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
     /// <summary>
     /// Opens the filter dialog.
     /// </summary>
+    [RelayCommand(CanExecute = nameof(CanUseKeybindings))]
     public void OpenFilterDialog(Window window)
     {
         if (SelectedFile is null) return;
@@ -289,6 +305,7 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
     /// <summary>
     /// Opens the sorting dialog.
     /// </summary>
+    [RelayCommand(CanExecute = nameof(CanUseKeybindings))]
     public void OpenSortingDialog(Window window)
     {
         if (SelectedFile is null) return;
@@ -299,6 +316,7 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
     /// <summary>
     /// Options the application preferences options window.
     /// </summary>
+    [RelayCommand(CanExecute = nameof(CanUseKeybindings))]
     public void OpenPreferences(Window window)
     {
         var preferencesWindow = new PreferencesWindow { DataContext = _prefs };
