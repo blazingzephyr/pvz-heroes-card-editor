@@ -369,5 +369,18 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
         var comparer = CreateObservable(Sorting, i => i!.BuildComparer());
 
         _cache.PopulateFrom(observable);
+
+        // Update opened tabs.
+        for (int i = 0; i < OpenedEntries.Count; i++)
+        {
+            for (int j = 0; j < Entries.Count; j++)
+            {
+                if (Entries[j].Guid == OpenedEntries[i].Guid)
+                {
+                    OpenedEntries[i] = Entries[j];
+                    break;
+                }
+            }
+        }
     }
 }
