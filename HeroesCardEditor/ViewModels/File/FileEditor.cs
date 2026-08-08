@@ -39,6 +39,7 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
     [NotifyCanExecuteChangedFor(nameof(CreateEmptyCardCommand))]
     [NotifyCanExecuteChangedFor(nameof(DeleteSelectedCardCommand))]
     [NotifyCanExecuteChangedFor(nameof(EditCodeCommand))]
+    [NotifyCanExecuteChangedFor(nameof(EditLocCommand))]
     public partial bool CanUseKeybindings { get; set; }
 
     /// <summary>
@@ -108,10 +109,10 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
     /// </summary>
     public int CardCount => _cache.Count;
 
+    private IDictionary<string, string?>? _loc;
     private readonly SourceCache<CardDescriptor, uint> _cache;
     private readonly ReadOnlyObservableCollection<ObservableCardDescriptor> _entries;
     private readonly JsonSerializerOptions _options;
-    private readonly IDictionary<string, string?>? _loc;
     private readonly CsvConfiguration _locOptions;
 
     public FileEditor(IStorageFile file, IStorageFile? loc, IEnumerable<CardDescriptor> descriptors, IDictionary<string, string?>? locDict, JsonSerializerOptions options, CsvConfiguration locOptions)
@@ -408,5 +409,26 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
                 }
             }
         }
+    }
+
+    [RelayCommand(CanExecute = nameof(CanUseKeybindings))]
+    public async Task EditLoc(Window window)
+    {
+        if (HasUnsavedChanged) return;
+        if (LocFile is null) return;
+        
+        var rawEditorMv = new RawEditorViewModel(LocFile);
+        var rawEditor = new RawEditorView() { DataContext = rawEditorMv };
+        await rawEditor.ShowDialog(window);
+
+        if (!rawEditorMv.Edited) return;
+
+        var loc = await EditorViewModel.DeserializeLoc(window, LocFile, _locOptions);
+        for (int i = 0; i < _entries.Count; i++)
+        {
+            _entries[i].Loc = loc;
+        }
+
+        _loc = loc;
     }
 }

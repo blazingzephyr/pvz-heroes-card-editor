@@ -339,6 +339,37 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
         return dict?.Values;
     }
 
+    public static async Task<Dictionary<string, string?>?> DeserializeLoc(Window window, IStorageFile? loc, CsvConfiguration locOptions)
+    {
+        Dictionary<string, string?>? locDict = null;
+        if (loc is not null)
+        {
+            using Stream locStream = await loc.OpenReadAsync();
+            locDict = new Dictionary<string, string?>();
+            
+            try
+            {
+                using var reader = new StreamReader(locStream);
+                using var csv = new CsvReader(reader, locOptions);
+
+                while (csv.Read())
+                {
+                    var key = csv.GetField(0);
+                    var value = csv.GetField(1);
+                    if (key is not null)
+                        locDict[key] = value;
+                }
+            }
+            catch (Exception e)
+            {
+                locDict = null;
+                ShowPopup(window, $"Could not parse {loc.Name}. {e.Message}\n{e.StackTrace}");
+            }
+        }
+
+        return locDict;
+    }
+
     /// <summary>
     /// Opens a file.
     /// If possible, bookmarks it and saves it to recent history.
@@ -354,32 +385,7 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
         var cards = await DeserializeFile(window, file, _options);
         if (cards is null) return false;
         
-        Dictionary<string, string?>? locDict = null;
-        if (loc is not null)
-        {
-            using Stream locStream = await loc.OpenReadAsync();
-            locDict = new Dictionary<string, string?>();
-            
-            try
-            {
-                using var reader = new StreamReader(locStream);
-                using var csv = new CsvReader(reader, _locOptions);
-
-                while (csv.Read())
-                {
-                    var key = csv.GetField(0);
-                    var value = csv.GetField(1);
-                    if (key is not null)
-                        locDict[key] = value;
-                }
-            }
-            catch (Exception e)
-            {
-                locDict = null;
-                ShowPopup(window, $"Could not parse {file.Name}. {e.Message}\n{e.StackTrace}");
-            }
-        }
-
+        var locDict = await DeserializeLoc(window, loc, _locOptions);
         FileEditor editor = new FileEditor(file, loc, cards, locDict, _options, _locOptions);
         _editorCache.AddOrUpdate(editor);
 

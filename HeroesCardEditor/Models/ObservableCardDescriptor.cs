@@ -558,9 +558,8 @@ internal partial class ObservableCardDescriptor : ObservableRecipient, ITabConta
     [ObservableProperty]
     public partial Component? SelectedComponent { get; set; }
     public EffectEntitiesDescriptor? EED { get; set; }
-
+    public IDictionary<string, string?>? Loc { get; set;}
     public CardDescriptor Descriptor => _desc;
-    public IDictionary<string, string?>? Loc => _loc;
 
     private readonly CardDescriptor _desc;
     private readonly Card _card = new Card();
@@ -587,13 +586,12 @@ internal partial class ObservableCardDescriptor : ObservableRecipient, ITabConta
     private EvolutionRestriction? _evolutionRestriction;
     private Tags? _tagsComponent;
     private string _tags;
-    private readonly IDictionary<string, string?>? _loc;
 
     public ObservableCardDescriptor(CardDescriptor inner, IDictionary<string, string?>? loc)
     {
         _desc = inner;
         _tags = string.Join(';', inner.Tags);
-        _loc = loc;
+        Loc = loc;
 
         SpecialAbilities = [.._desc.SpecialAbilities];
         SpecialAbilities.CollectionChanged += (s, e) =>
@@ -777,9 +775,9 @@ internal partial class ObservableCardDescriptor : ObservableRecipient, ITabConta
 
     private string? GetFromLoc(string key)
     {
-        if (_loc is object)
+        if (Loc is object)
         {
-            _loc.TryGetValue($"{PrefabName}_{key}", out string? value);
+            Loc.TryGetValue($"{PrefabName}_{key}", out string? value);
             return value;
         }
 
@@ -788,9 +786,9 @@ internal partial class ObservableCardDescriptor : ObservableRecipient, ITabConta
 
     private void SetLoc(string key, string? value, string propertyName)
     {
-        if (_loc is object && value is not null)
+        if (Loc is object && value is not null)
         {
-            _loc[$"{PrefabName}_{key}"] = value;
+            Loc[$"{PrefabName}_{key}"] = value;
             OnPropertyChanged(propertyName);
         }
     }
