@@ -388,6 +388,22 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
                 if (_entries[j].Guid == OpenedEntries[i].Guid)
                 {
                     OpenedEntries[i] = _entries[j];
+                    if (_entries[j].Guid == SelectedEntry?.Guid)
+                    {
+                        int index = -1;
+                        for (int k = 0; k < SelectedEntry?.EED?.Entities.Count; k++)
+                        {
+                            if (SelectedEntry.SelectedEntity == SelectedEntry?.EED?.Entities[k])
+                            {
+                                index = k;
+                                break;
+                            }
+                        }
+                        
+                        SelectedEntry = _entries[j];
+                        SelectedEntry.SelectedComponent = null;
+                        if (index > -1) SelectedEntry.SelectedEntity = _entries[j]?.EED?.Entities[index];
+                    }
                     break;
                 }
             }
