@@ -1,5 +1,6 @@
 ﻿
 using System.Collections.Immutable;
+using System.Collections.ObjectModel;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -63,9 +64,18 @@ public class DataTemplateSourceGenerator : IIncrementalGenerator
             classSymbol.Name : $"{classSymbol.ContainingNamespace}.{classSymbol.Name}";
 
         string properties = string.Empty;
-        var members = classSymbol
-            .GetMembers()
-            .OfType<IPropertySymbol>();
+
+        Collection<IPropertySymbol> members = [];
+        var current = classSymbol;
+        while (current != null)
+        {
+            foreach (var member in current.GetMembers())
+            {
+                if (member is IPropertySymbol prop) members.Add(prop);
+            }
+
+            current = current.BaseType;
+        }
 
         bool panelMethodAppended = false;
         foreach (var property in members)

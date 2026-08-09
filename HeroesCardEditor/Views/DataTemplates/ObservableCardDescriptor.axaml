@@ -697,13 +697,16 @@
 												<dt:ModifySunCostEffectDescriptorDataTemplate/>
 												<dt:SetStatEffectDescriptorDataTemplate/>
 												<dt:FilterDataTemplate/>
-												<dt:HeroMultiplierDataTemplate/>
-												<dt:MultiplierComponentDataTemplate/>
 												<dt:QueryOnlyComponentDataTemplate/>
 												<dt:SingleIntegerComponentDataTemplate/>
 												<dt:EffectValueConditionDataTemplate/>
 												<dt:PlayerInfoConditionDataTemplate/>
 												<dt:QueryEntityConditionDataTemplate/>
+												<dt:HeroMultiplierDataTemplate/>
+												<dt:DrawnCardCostMultiplierDataTemplate/>
+												<dt:TargetAttackMultiplierDataTemplate/>
+												<dt:TargetAttackOrHealthMultiplierDataTemplate/>
+												<dt:TargetHealthMultiplierDataTemplate/>
 												<dt:QueryMultiplierDataTemplate/>
 												<dt:IntegerArrayComponentDataTemplate/>
 												<dt:ComponentDataTemplate/>
