@@ -19,6 +19,7 @@ using ReactiveUI;
 using CsvHelper;
 using CsvHelper.Configuration;
 using CommunityToolkit.Mvvm.Input;
+using HeroesCardEditor.Models.AI;
 
 namespace HeroesCardEditor.ViewModels;
 
@@ -40,6 +41,7 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
     [NotifyCanExecuteChangedFor(nameof(DeleteSelectedCardCommand))]
     [NotifyCanExecuteChangedFor(nameof(EditCodeCommand))]
     [NotifyCanExecuteChangedFor(nameof(EditLocCommand))]
+    [NotifyCanExecuteChangedFor(nameof(EditAICommand))]
     public partial bool CanUseKeybindings { get; set; }
 
     /// <summary>
@@ -47,6 +49,12 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
     /// </summary>
     [ObservableProperty]
     public partial IStorageFile? LocFile { get; private set; }
+
+    /// <summary>
+    /// The associated Avalonia AI file.
+    /// </summary>
+    [ObservableProperty]
+    public partial IStorageFile? AIFile { get; private set; }
 
     /// <summary>
     /// DynamicData dynamic filter wrapper.
@@ -110,15 +118,26 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
     public int CardCount => _cache.Count;
 
     private IDictionary<string, string?>? _loc;
+    private AiGameStateScoringValuesAsset? _ai;
     private readonly SourceCache<CardDescriptor, uint> _cache;
     private readonly ReadOnlyObservableCollection<ObservableCardDescriptor> _entries;
     private readonly JsonSerializerOptions _options;
     private readonly CsvConfiguration _locOptions;
 
-    public FileEditor(IStorageFile file, IStorageFile? loc, IEnumerable<CardDescriptor> descriptors, IDictionary<string, string?>? locDict, JsonSerializerOptions options, CsvConfiguration locOptions)
+    public FileEditor(
+        IStorageFile file,
+        IStorageFile? loc,
+        IStorageFile? ai,
+        IEnumerable<CardDescriptor> descriptors,
+        IDictionary<string, string?>? locDict,
+        AiGameStateScoringValuesAsset? scoringValues,
+        JsonSerializerOptions options,
+        CsvConfiguration locOptions)
     {
         File = file;
         LocFile = loc;
+        AIFile = ai;
+
         Filter = new FileEditorFilter();
         Sorting = new FileEditorSorting();
         OpenedEntries = [];
@@ -128,13 +147,14 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
         var comparer = CreateObservable(Sorting, i => i!.BuildComparer());
 
         _loc = locDict;
+        _ai = scoringValues;
         _options = options;
         _locOptions = locOptions;
         _cache = new SourceCache<CardDescriptor, uint>(p => p.Components.OfType<Card>().First().Value);
         _cache.PopulateFrom(observable);
         _cache
             .Connect()
-            .Transform(c => new ObservableCardDescriptor(c, locDict))
+            .Transform((c, guid) => new ObservableCardDescriptor(c, locDict, scoringValues))
             .AutoRefresh()
             .Filter(filter)
             .ObserveOn(RxApp.MainThreadScheduler)
@@ -184,13 +204,29 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
                 nameof(ObservableCardDescriptor.Subtypes),
                 nameof(ObservableCardDescriptor.EED),
                 nameof(ObservableCardDescriptor.EED.Entities),
+                nameof(ObservableCardDescriptor.Loc),
                 nameof(ObservableCardDescriptor.Name),
                 nameof(ObservableCardDescriptor.ShortDesc),
                 nameof(ObservableCardDescriptor.LongDesc),
                 nameof(ObservableCardDescriptor.FlavorText),
                 nameof(ObservableCardDescriptor.Targeting),
                 nameof(ObservableCardDescriptor.HeraldFighter),
-                nameof(ObservableCardDescriptor.HeraldTrick))
+                nameof(ObservableCardDescriptor.HeraldTrick),
+                nameof(ObservableCardDescriptor.AI),
+                nameof(ObservableCardDescriptor.UsedByAi),
+                nameof(ObservableCardDescriptor.NumCopies),
+                nameof(ObservableCardDescriptor.UseFighterOnBoardBaseValueOverride),
+                nameof(ObservableCardDescriptor.FighterOnBoardBaseValue),
+                nameof(ObservableCardDescriptor.UseFighterOnBoardMultiplierOverride),
+                nameof(ObservableCardDescriptor.FighterOnBoardMultiplier),
+                nameof(ObservableCardDescriptor.UseCardInHandBaseValueOverride),
+                nameof(ObservableCardDescriptor.CardInHandBaseValue),
+                nameof(ObservableCardDescriptor.UseCardInHandMultiplierOverride),
+                nameof(ObservableCardDescriptor.CardInHandMultiplier),
+                nameof(ObservableCardDescriptor.UseEnvironmentOnBoardValueOverride),
+                nameof(ObservableCardDescriptor.EnvironmentOnBoardValue),
+                nameof(ObservableCardDescriptor.UseEnvironmentOnBoardMultiplierOverride),
+                nameof(ObservableCardDescriptor.EnvironmentOnBoardMultiplier))
             .Subscribe(p =>
             {
                 p?.HasUnsavedChanged = true;
@@ -202,7 +238,7 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
     /// Saves cards to the file this editor points to (or a new location, if provided).
     /// Also takes options (I changed it from optional to required because otherwise it fails to write the file correctly).
     /// </summary>
-    public async Task Save(JsonSerializerOptions options, IStorageFile? destination = default, IStorageFile? loc = default)
+    public async Task Save(JsonSerializerOptions options, IStorageFile? destination = default, IStorageFile? loc = default, IStorageFile? ai = default)
     {
         if (destination is object)
         {
@@ -212,6 +248,11 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
         if (loc is object)
         {
             LocFile = loc;
+        }
+
+        if (ai is object)
+        {
+            AIFile = ai;
         }
 
         var dict = _cache.Items.ToDictionary(k => k.Components.OfType<Card>().First().Value.ToString());
@@ -231,6 +272,13 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
                 csv.WriteField(kvp.Value);
                 csv.NextRecord();
             }
+        }
+
+        if (AIFile is object && _ai is not null)
+        {
+            writeStream = await AIFile.OpenWriteAsync();
+            JsonSerializer.Serialize(writeStream, _ai, options);
+            writeStream.Close();
         }
 
         HasUnsavedChanged = false;
@@ -430,5 +478,27 @@ internal partial class FileEditor : ObservableRecipient, ITabContainer
         }
 
         _loc = loc;
+        OpenedEntries.Clear();
+    }
+
+    [RelayCommand(CanExecute = nameof(CanUseKeybindings))]
+    public async Task EditAI(Window window)
+    {
+        if (HasUnsavedChanged) return;
+        if (AIFile is null) return;
+        
+        var rawEditorMv = new RawEditorViewModel(AIFile);
+        var rawEditor = new RawEditorView() { DataContext = rawEditorMv };
+        await rawEditor.ShowDialog(window);
+
+        if (!rawEditorMv.Edited) return;
+
+        _ai = await EditorViewModel.DeserializeAi(window, AIFile, _options);
+        for (int i = 0; i < _entries.Count; i++)
+        {
+            _entries[i].AI = _ai;
+        }
+        
+        OpenedEntries.Clear();
     }
 }

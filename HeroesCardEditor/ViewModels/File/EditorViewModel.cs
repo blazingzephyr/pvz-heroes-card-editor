@@ -18,6 +18,7 @@ using CsvHelper.Configuration;
 using DynamicData;
 using DynamicData.Binding;
 using HeroesCardEditor.Models;
+using HeroesCardEditor.Models.AI;
 using PvZCards.Engine;
 using ReactiveUI;
 
@@ -185,10 +186,11 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
     {
         var files = await window.StorageProvider.OpenFilePickerAsync(_fileOpenOptions);
         var loc = await window.StorageProvider.OpenFilePickerAsync(_locOpenOptions);
+        var ai = await window.StorageProvider.OpenFilePickerAsync(_fileOpenOptions);
 
         if (files.Count == 1 && files[0] is not null)
         {
-            await OpenFile(window, files[0], loc.Count == 1 ? loc[0] : null);
+            await OpenFile(window, files[0], loc.Count == 1 ? loc[0] : null, ai.Count == 1 ? ai[0] : null);
         }
     }
 
@@ -201,13 +203,19 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
         {
             var file = await window.StorageProvider.OpenFileBookmarkAsync(recent.Bookmark);
             IStorageBookmarkFile? locBookmark = null;
+            IStorageBookmarkFile? aiBookmark = null;
 
-            if (recent.LocBookmark is string bookmark)
+            if (recent.LocBookmark is string lcb)
             {
-                locBookmark = await window.StorageProvider.OpenFileBookmarkAsync(bookmark);
+                locBookmark = await window.StorageProvider.OpenFileBookmarkAsync(lcb);
             }
 
-            await OpenFile(window, file, locBookmark);
+            if (recent.AIBookmark is string aib)
+            {
+                aiBookmark = await window.StorageProvider.OpenFileBookmarkAsync(aib);
+            }
+
+            await OpenFile(window, file, locBookmark, aiBookmark);
         }
     }
 
@@ -270,11 +278,12 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
         if (SelectedFile is null) return;
         var file = await window.StorageProvider.SaveFilePickerAsync(_fileSaveOptions);
         var loc = await window.StorageProvider.SaveFilePickerAsync(_locSaveOptions);
-        await SelectedFile.Save(_options, file, loc);
+        var ai = await window.StorageProvider.SaveFilePickerAsync(_fileSaveOptions);
+        await SelectedFile.Save(_options, file, loc, ai);
 
         if (file is not null)
         {
-            await SaveRecent(file, loc);
+            await SaveRecent(file, loc, ai);
             ShowPopup(window, $"Saved {SelectedFile.CardCount} cards to {SelectedFile.File.Name}.");
         }
     }
@@ -339,6 +348,27 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
         return dict?.Values;
     }
 
+    public static async Task<AiGameStateScoringValuesAsset?> DeserializeAi(Window window, IStorageFile? ai, JsonSerializerOptions options)
+    {
+        AiGameStateScoringValuesAsset? values = null;
+        if (ai is not null)
+        {
+            using Stream aiStream = await ai.OpenReadAsync();
+            try
+            {
+                values = JsonSerializer.Deserialize<AiGameStateScoringValuesAsset>(aiStream, options);
+            }
+            catch (Exception e)
+            {
+                string message = $"Could not parse {ai.Name}. {e.Message}\n{e.StackTrace}";
+                Console.WriteLine(message);
+                ShowPopup(window, message);
+            }
+        }
+
+        return values;
+    }
+
     public static async Task<Dictionary<string, string?>?> DeserializeLoc(Window window, IStorageFile? loc, CsvConfiguration locOptions)
     {
         Dictionary<string, string?>? locDict = null;
@@ -363,7 +393,10 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
             catch (Exception e)
             {
                 locDict = null;
-                ShowPopup(window, $"Could not parse {loc.Name}. {e.Message}\n{e.StackTrace}");
+                
+                string message = $"Could not parse {loc.Name}. {e.Message}\n{e.StackTrace}";
+                Console.WriteLine(message);
+                ShowPopup(window, message);
             }
         }
 
@@ -374,7 +407,7 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
     /// Opens a file.
     /// If possible, bookmarks it and saves it to recent history.
     /// </summary>
-    private async Task<bool> OpenFile(Window window, IStorageFile? file, IStorageFile? loc)
+    private async Task<bool> OpenFile(Window window, IStorageFile? file, IStorageFile? loc, IStorageFile? ai)
     {
         if (file is null) return false;
         if (OpenedFiles.Any(p => p.File.Path == file.Path)) return false;
@@ -386,10 +419,12 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
         if (cards is null) return false;
         
         var locDict = await DeserializeLoc(window, loc, _locOptions);
-        FileEditor editor = new FileEditor(file, loc, cards, locDict, _options, _locOptions);
+        var aiScoringValues = await DeserializeAi(window, ai, _options);
+
+        FileEditor editor = new FileEditor(file, loc, ai, cards, locDict, aiScoringValues, _options, _locOptions);
         _editorCache.AddOrUpdate(editor);
 
-        await SaveRecent(file, loc);
+        await SaveRecent(file, loc, ai);
         ShowPopup(window, $"Found {editor.CardCount} cards in {editor.File.Name}.");
         return true;
     }
@@ -397,15 +432,15 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
     /// <summary>
     /// Saves a file to recent history.
     /// </summary>
-    private async Task SaveRecent(IStorageFile file, IStorageFile? loc)
+    private async Task SaveRecent(IStorageFile file, IStorageFile? loc, IStorageFile? ai)
     {
         if (file.CanBookmark)
         {
             var bookmark = await file.SaveBookmarkAsync();
             if (bookmark is not null)
             {
-                string? locBookmark = null, locFileName = null;
-                Uri? locUri = null;
+                string? locBookmark = null, locFileName = null, aiBookmark = null, aiFileName = null;
+                Uri? locUri = null, aiUri = null;
 
                 if (loc is not null && (locBookmark = await loc.SaveBookmarkAsync()) is not null)
                 {
@@ -413,7 +448,13 @@ internal partial class EditorViewModel : ObservableRecipient, ITabContainer
                     locUri = loc.Path;
                 }
 
-                RecentFile recent = new RecentFile(bookmark, file.Name, file.Path, locBookmark, locFileName, locUri, DateTime.Now);
+                if (ai is not null && (aiBookmark = await ai.SaveBookmarkAsync()) is not null)
+                {
+                    aiFileName = ai.Name;
+                    aiUri = ai.Path;
+                }
+
+                RecentFile recent = new RecentFile(bookmark, file.Name, file.Path, locBookmark, locFileName, locUri, aiBookmark, aiFileName, aiUri, DateTime.Now);
                 _recentCache.AddOrUpdate(recent);
             }
         }

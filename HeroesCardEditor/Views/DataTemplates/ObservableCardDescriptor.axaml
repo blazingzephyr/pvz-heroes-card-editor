@@ -838,6 +838,163 @@
 					</Grid>
                 </ScrollViewer>
             </TabItem>
+
+            <TabItem Header="AI" FontSize="15"
+				IsEnabled="{Binding AI,
+					Converter={x:Static ObjectConverters.IsNotNull}}">
+                <ScrollViewer>
+					<Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,*">
+						<Grid Grid.Row="0" Grid.Column="0" ColumnDefinitions="Auto,Auto">
+							<TextBlock Grid.Column="0"
+									VerticalAlignment="Center"
+									Margin="0,0,15,0"
+									Text="NumCopies"/>
+							<NumericUpDown Grid.Column="1"
+									VerticalAlignment="Center"
+									HorizontalAlignment="Stretch"
+									Value="{Binding NumCopies, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</Grid>
+
+						<Grid Grid.Row="1" Grid.Column="0" ColumnDefinitions="Auto,Auto" IsEnabled="{Binding UsedByAi}">
+							<TextBlock Grid.Column="0"
+									VerticalAlignment="Center"
+									Margin="0,0,15,0"
+									Text="UseFighterOnBoardBaseValueOverride"/>
+							<CheckBox Grid.Column="1"
+									VerticalAlignment="Center"
+									HorizontalAlignment="Stretch"
+									IsChecked="{Binding UseFighterOnBoardBaseValueOverride, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</Grid>
+
+						<Grid Grid.Row="1" Grid.Column="1" ColumnDefinitions="Auto,Auto" IsEnabled="{Binding UsedByAi}">
+							<TextBlock Grid.Column="0"
+									VerticalAlignment="Center"
+									Margin="0,0,15,0"
+									Text="FighterOnBoardBaseValue"/>
+							<NumericUpDown Grid.Column="1"
+									VerticalAlignment="Center"
+									HorizontalAlignment="Stretch"
+									Value="{Binding FighterOnBoardBaseValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+									IsEnabled="{Binding UseFighterOnBoardBaseValueOverride}"/>
+						</Grid>
+						
+						<Grid Grid.Row="2" Grid.Column="0" ColumnDefinitions="Auto,Auto" IsEnabled="{Binding UsedByAi}">
+							<TextBlock Grid.Column="0"
+									VerticalAlignment="Center"
+									Margin="0,0,15,0"
+									Text="UseFighterOnBoardMultiplierOverride"/>
+							<CheckBox Grid.Column="1"
+									VerticalAlignment="Center"
+									HorizontalAlignment="Stretch"
+									IsChecked="{Binding UseFighterOnBoardMultiplierOverride, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</Grid>
+						
+						<Grid Grid.Row="2" Grid.Column="1" ColumnDefinitions="Auto,Auto" IsEnabled="{Binding UsedByAi}">
+							<TextBlock Grid.Column="0"
+									VerticalAlignment="Center"
+									Margin="0,0,15,0"
+									Text="FighterOnBoardMultiplier"/>
+							<NumericUpDown Grid.Column="1"
+									VerticalAlignment="Center"
+									HorizontalAlignment="Stretch"
+									Value="{Binding FighterOnBoardMultiplier, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+									IsEnabled="{Binding UseFighterOnBoardMultiplierOverride}"/>
+						</Grid>
+
+						<Grid Grid.Row="3" Grid.Column="0" ColumnDefinitions="Auto,Auto" IsEnabled="{Binding UsedByAi}">
+							<TextBlock Grid.Column="0"
+									VerticalAlignment="Center"
+									Margin="0,0,15,0"
+									Text="UseCardInHandBaseValueOverride"/>
+							<CheckBox Grid.Column="1"
+									VerticalAlignment="Center"
+									HorizontalAlignment="Stretch"
+									IsChecked="{Binding UseCardInHandBaseValueOverride, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</Grid>
+
+						<Grid Grid.Row="3" Grid.Column="1" ColumnDefinitions="Auto,Auto" IsEnabled="{Binding UsedByAi}">
+							<TextBlock Grid.Column="0"
+									VerticalAlignment="Center"
+									Margin="0,0,15,0"
+									Text="CardInHandBaseValue"/>
+							<NumericUpDown Grid.Column="1"
+									VerticalAlignment="Center"
+									HorizontalAlignment="Stretch"
+									Value="{Binding CardInHandBaseValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+									IsEnabled="{Binding UseCardInHandBaseValueOverride}"/>
+						</Grid>
+
+						<Grid Grid.Row="4" Grid.Column="0" ColumnDefinitions="Auto,Auto" IsEnabled="{Binding UsedByAi}">
+							<TextBlock Grid.Column="0"
+									VerticalAlignment="Center"
+									Margin="0,0,15,0"
+									Text="UseCardInHandMultiplierOverride"/>
+							<CheckBox Grid.Column="1"
+									VerticalAlignment="Center"
+									HorizontalAlignment="Stretch"
+									IsChecked="{Binding UseCardInHandMultiplierOverride, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</Grid>
+
+						<Grid Grid.Row="4" Grid.Column="1" ColumnDefinitions="Auto,Auto" IsEnabled="{Binding UsedByAi}">
+							<TextBlock Grid.Column="0"
+									VerticalAlignment="Center"
+									Margin="0,0,15,0"
+									Text="CardInHandMultiplier"/>
+							<NumericUpDown Grid.Column="1"
+									VerticalAlignment="Center"
+									HorizontalAlignment="Stretch"
+									Value="{Binding CardInHandMultiplier, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+									IsEnabled="{Binding UseCardInHandMultiplierOverride}"/>
+						</Grid>
+
+						<Grid Grid.Row="5" Grid.Column="0" ColumnDefinitions="Auto,Auto" IsEnabled="{Binding UsedByAi}">
+							<TextBlock Grid.Column="0"
+									VerticalAlignment="Center"
+									Margin="0,0,15,0"
+									Text="UseEnvironmentOnBoardValueOverride"/>
+							<CheckBox Grid.Column="1"
+									VerticalAlignment="Center"
+									HorizontalAlignment="Stretch"
+									IsChecked="{Binding UseEnvironmentOnBoardValueOverride, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</Grid>
+
+						<Grid Grid.Row="5" Grid.Column="1" ColumnDefinitions="Auto,Auto" IsEnabled="{Binding UsedByAi}">
+							<TextBlock Grid.Column="0"
+									VerticalAlignment="Center"
+									Margin="0,0,15,0"
+									Text="EnvironmentOnBoardValue"/>
+							<NumericUpDown Grid.Column="1"
+									VerticalAlignment="Center"
+									HorizontalAlignment="Stretch"
+									Value="{Binding EnvironmentOnBoardValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+									IsEnabled="{Binding UseEnvironmentOnBoardValueOverride}"/>
+						</Grid>
+
+						<Grid Grid.Row="6" Grid.Column="0" ColumnDefinitions="Auto,Auto" IsEnabled="{Binding UsedByAi}">
+							<TextBlock Grid.Column="0"
+									VerticalAlignment="Center"
+									Margin="0,0,15,0"
+									Text="UseEnvironmentOnBoardMultiplierOverride"/>
+							<CheckBox Grid.Column="1"
+									VerticalAlignment="Center"
+									HorizontalAlignment="Stretch"
+									IsChecked="{Binding UseEnvironmentOnBoardMultiplierOverride, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+						</Grid>
+
+						<Grid Grid.Row="6" Grid.Column="1" ColumnDefinitions="Auto,Auto" IsEnabled="{Binding UsedByAi}">
+							<TextBlock Grid.Column="0"
+									VerticalAlignment="Center"
+									Margin="0,0,15,0"
+									Text="EnvironmentOnBoardMultiplier"/>
+							<NumericUpDown Grid.Column="1"
+									VerticalAlignment="Center"
+									HorizontalAlignment="Stretch"
+									Value="{Binding EnvironmentOnBoardMultiplier, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+									IsEnabled="{Binding UseEnvironmentOnBoardMultiplierOverride}"/>
+						</Grid>
+					</Grid>
+                </ScrollViewer>
+            </TabItem>
         </TabControl>
 	</DataTemplate>
 </ResourceDictionary>

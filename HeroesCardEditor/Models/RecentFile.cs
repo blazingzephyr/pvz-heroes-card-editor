@@ -7,7 +7,17 @@ namespace HeroesCardEditor.Models;
 /// <summary>
 /// Recently opened file.
 /// </summary>
-internal partial class RecentFile(string bookmark, string fileName, Uri path, string? locBookmark, string? LocFileName, Uri? locPath, DateTime lastOpenedAt) : ObservableRecipient
+internal partial class RecentFile(
+    string bookmark,
+    string fileName,
+    Uri path,
+    string? locBookmark,
+    string? locFileName,
+    Uri? locPath,
+    string? aiBookmark,
+    string? aiFileName,
+    Uri? aiPath,
+    DateTime lastOpenedAt) : ObservableRecipient
 {
     /// <summary>
     /// Avalonia Storage bookmark, representing the file access point.
@@ -37,13 +47,32 @@ internal partial class RecentFile(string bookmark, string fileName, Uri path, st
     /// Localization file name (for pretty printing)
     /// </summary>
     [ObservableProperty]
-    public partial string? LocFileName { get; set; } = LocFileName;
+    public partial string? LocFileName { get; set; } = locFileName;
 
     /// <summary>
     /// Localization file path (in Uri format).
     /// </summary>
     [ObservableProperty]
     public partial Uri? LocPath { get; set; } = locPath;
+
+
+    /// <summary>
+    /// Avalonia Storage bookmark, representing the localization file access point.
+    /// </summary>
+    [ObservableProperty]
+    public partial string? AIBookmark { get; set; } = aiBookmark;
+
+    /// <summary>
+    /// Localization file name (for pretty printing)
+    /// </summary>
+    [ObservableProperty]
+    public partial string? AIFileName { get; set; } = aiFileName;
+
+    /// <summary>
+    /// Localization file path (in Uri format).
+    /// </summary>
+    [ObservableProperty]
+    public partial Uri? AIPath { get; set; } = aiPath;
 
     /// <summary>
     /// The last time this file was opened.

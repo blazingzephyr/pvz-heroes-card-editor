@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DynamicData;
 using DynamicData.Binding;
+using HeroesCardEditor.Models.AI;
 using HeroesCardEditor.ViewModels;
 using PvZCards.Engine;
 using PvZCards.Engine.Components;
@@ -54,7 +55,11 @@ internal partial class ObservableCardDescriptor : ObservableRecipient, ITabConta
     public string? PrefabName
     {
         get => _desc.PrefabName;
-        set => SetProperty(_desc.PrefabName, value, b => _desc.PrefabName = b, nameof(PrefabName));
+        set 
+        {
+            SetProperty(_desc.PrefabName, value, b => _desc.PrefabName = b, nameof(PrefabName));
+            GetAiOverrides()?.CardEntry.Guid = value;
+        }
     }
 
     /// <summary>
@@ -549,6 +554,104 @@ internal partial class ObservableCardDescriptor : ObservableRecipient, ITabConta
         set => SetLoc("heraldTrick", value, nameof(HeraldTrick));
     }
 
+    public bool UsedByAi => NumCopies > 0;
+    public int NumCopies
+    {
+        get => GetAiOverrides()?.CardEntry.NumCopies ?? 0;
+        set
+        {
+            if (AI is null) return;
+            if (value > 0)
+            {
+                SetAiOverrides();
+                GetAiOverrides()?.CardEntry.NumCopies = value;
+            }
+            else
+            {
+                AI.CardValueOverrides.Array = [.. AI.CardValueOverrides.Array.Where(val => val.CardEntry.CardGuid != Guid)];
+            }
+            OnPropertyChanged(nameof(NumCopies));
+            OnPropertyChanged(nameof(UsedByAi));
+        }
+    }
+
+    public bool UseFighterOnBoardBaseValueOverride
+    {
+        get => GetAiOverrides()?.UseFighterOnBoardBaseValueOverride == 1;
+        set => SetAiProperty(() => GetAiOverrides()?.UseFighterOnBoardBaseValueOverride = value ? (byte)1 : (byte)0, nameof(UseFighterOnBoardBaseValueOverride));
+    }
+
+    public float FighterOnBoardBaseValue
+    {
+        get => GetAiOverrides()?.FighterOnBoardBaseValue ?? 0.0f;
+        set => SetAiProperty(() => GetAiOverrides()?.FighterOnBoardBaseValue = value, nameof(FighterOnBoardBaseValue));
+    }
+
+    public bool UseFighterOnBoardMultiplierOverride
+    {
+        get => GetAiOverrides()?.UseFighterOnBoardMultiplierOverride == 1;
+        set => SetAiProperty(() => GetAiOverrides()?.UseFighterOnBoardMultiplierOverride = value ? (byte)1 : (byte)0, nameof(UseFighterOnBoardMultiplierOverride));
+    }
+
+    public float FighterOnBoardMultiplier
+    {
+        get => GetAiOverrides()?.FighterOnBoardMultiplier ?? 0.0f;
+        set => SetAiProperty(() => GetAiOverrides()?.FighterOnBoardMultiplier = value, nameof(FighterOnBoardMultiplier));
+    }
+
+    public bool UseCardInHandBaseValueOverride
+    {
+        get => GetAiOverrides()?.UseCardInHandBaseValueOverride == 1;
+        set => SetAiProperty(() => GetAiOverrides()?.UseCardInHandBaseValueOverride = value ? (byte)1 : (byte)0, nameof(UseCardInHandBaseValueOverride));
+    }
+
+    public float CardInHandBaseValue
+    {
+        get => GetAiOverrides()?.CardInHandBaseValue ?? 0.0f;
+        set => SetAiProperty(() => GetAiOverrides()?.CardInHandBaseValue = value, nameof(CardInHandBaseValue));
+    }
+
+    public bool UseCardInHandMultiplierOverride
+    {
+        get => GetAiOverrides()?.UseCardInHandMultiplierOverride == 1;
+        set => SetAiProperty(() => GetAiOverrides()?.UseCardInHandMultiplierOverride = value ? (byte)1 : (byte)0, nameof(UseCardInHandMultiplierOverride));
+    }
+
+    public float CardInHandMultiplier
+    {
+        get => GetAiOverrides()?.CardInHandMultiplier ?? 0.0f;
+        set => SetAiProperty(() => GetAiOverrides()?.CardInHandMultiplier = value, nameof(CardInHandMultiplier));
+    }
+
+    public bool UseEnvironmentOnBoardValueOverride
+    {
+        get => GetAiOverrides()?.UseEnvironmentOnBoardValueOverride == 1;
+        set => SetAiProperty(() => GetAiOverrides()?.UseEnvironmentOnBoardValueOverride = value ? (byte)1 : (byte)0, nameof(UseEnvironmentOnBoardValueOverride));
+    }
+
+    public float EnvironmentOnBoardValue
+    {
+        get => GetAiOverrides()?.EnvironmentOnBoardValue ?? 0.0f;
+        set => SetAiProperty(() => GetAiOverrides()?.EnvironmentOnBoardValue = value, nameof(EnvironmentOnBoardValue));
+    }
+
+    public bool UseEnvironmentOnBoardMultiplierOverride
+    {
+        get => GetAiOverrides()?.UseEnvironmentOnBoardMultiplierOverride == 1;
+        set => SetAiProperty(() => GetAiOverrides()?.UseEnvironmentOnBoardMultiplierOverride = value ? (byte)1 : (byte)0, nameof(UseEnvironmentOnBoardMultiplierOverride));
+    }
+
+    public float EnvironmentOnBoardMultiplier
+    {
+        get => GetAiOverrides()?.EnvironmentOnBoardMultiplier ?? 0.0f;
+        set => SetAiProperty(() => GetAiOverrides()?.EnvironmentOnBoardMultiplier = value, nameof(EnvironmentOnBoardMultiplier));
+    }
+    
+    private AiGameStateScoringValueCardOverrides? GetAiOverrides()
+    {
+        return AI?.CardValueOverrides.Array.FirstOrDefault(c => c.CardEntry.CardGuid == Guid);
+    }
+
     public ObservableCollection<GrantedTriggeredAbility> GrantedAbilities { get; set; } = [];
     public ObservableCollection<SpecialAbility> SpecialAbilities { get; set; }
     public ObservableCollection<Tribe> Subtypes { get; set; }
@@ -558,7 +661,8 @@ internal partial class ObservableCardDescriptor : ObservableRecipient, ITabConta
     [ObservableProperty]
     public partial Component? SelectedComponent { get; set; }
     public EffectEntitiesDescriptor? EED { get; set; }
-    public IDictionary<string, string?>? Loc { get; set;}
+    public IDictionary<string, string?>? Loc { get; set; }
+    public AiGameStateScoringValuesAsset? AI { get; set; }
     public CardDescriptor Descriptor => _desc;
 
     private readonly CardDescriptor _desc;
@@ -587,11 +691,13 @@ internal partial class ObservableCardDescriptor : ObservableRecipient, ITabConta
     private Tags? _tagsComponent;
     private string _tags;
 
-    public ObservableCardDescriptor(CardDescriptor inner, IDictionary<string, string?>? loc)
+    public ObservableCardDescriptor(CardDescriptor inner, IDictionary<string, string?>? loc, AiGameStateScoringValuesAsset? ai)
     {
         _desc = inner;
         _tags = string.Join(';', inner.Tags);
+
         Loc = loc;
+        AI = ai;
 
         SpecialAbilities = [.._desc.SpecialAbilities];
         SpecialAbilities.CollectionChanged += (s, e) =>
@@ -700,6 +806,8 @@ internal partial class ObservableCardDescriptor : ObservableRecipient, ITabConta
         }
     }
 
+    public void SetDirty(string propertyName) => OnPropertyChanged(propertyName);
+
     public void AddNewGrantedAbility()
     {
         if (_desc.Components.OfType<GrantedTriggeredAbilities>().FirstOrDefault() is not GrantedTriggeredAbilities gta)
@@ -790,6 +898,37 @@ internal partial class ObservableCardDescriptor : ObservableRecipient, ITabConta
         {
             Loc[$"{PrefabName}_{key}"] = value;
             OnPropertyChanged(propertyName);
+        }
+    }
+
+    void SetAiProperty(Action action, string propertyName)
+    {
+        SetAiOverrides();
+        action();
+        OnPropertyChanged(propertyName);
+    }
+
+    void SetAiOverrides()
+    {
+        if (AI is null) return;
+        if (!AI.CardValueOverrides.Array.Any(c => c.CardEntry.CardGuid == Guid))
+        {
+            var aiOverrides = new AiGameStateScoringValueCardOverrides
+            {
+                CardEntry = new CardEntry
+                {
+                    CardGuid = Guid,
+                    Guid = PrefabName,
+                    NumCopies = 1
+                }
+            };
+
+            var arr = AI.CardValueOverrides.Array;
+            var length = arr.Length;
+
+            Array.Resize(ref arr, length + 1);
+            AI.CardValueOverrides.Array = arr;
+            AI.CardValueOverrides.Array[length] = aiOverrides;
         }
     }
 

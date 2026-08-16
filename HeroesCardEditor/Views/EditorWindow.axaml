@@ -117,6 +117,10 @@
 						  IsEnabled="{Binding !SelectedFile.HasUnsavedChanged}"
 						  Command="{Binding SelectedFile.EditLoc}"
 						  CommandParameter="{Binding $parent[Window]}"/>
+				<MenuItem Header="_Edit AI parameters"
+						  IsEnabled="{Binding !SelectedFile.HasUnsavedChanged}"
+						  Command="{Binding SelectedFile.EditAI}"
+						  CommandParameter="{Binding $parent[Window]}"/>
 			</MenuItem>			
 
 			<MenuItem Header="_View"
